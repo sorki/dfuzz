@@ -19,7 +19,6 @@ def main():
     parser.add_option('-c', '--config', metavar='FNAME',
         help='Configuration file name', default='fuzz.conf')
 
-
     (opts, args) = parser.parse_args()
 
     lvl = logging.WARNING
@@ -53,7 +52,6 @@ def main():
             ' dir: "%s"' % (opts.config, work_dir))
         sys.exit(1)
 
-
     cfg = conf.Config(work_dir)
     logging.debug('Configuration dump: %s', cfg.as_dict())
 
@@ -62,7 +60,7 @@ def main():
 
     if not (cfg.generation or cfg.mutation or cfg.combination):
         logging.error('Nothing to do, set at least one mode '
-            'in [global] section to 1')
+            'in [global] section to 1 or create proper dirs')
         sys.exit(1)
 
 def dir_integrity(work_dir, cfg_obj):
