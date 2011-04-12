@@ -22,11 +22,14 @@ def main():
 
     (opts, args) = parser.parse_args()
 
-    lvl = logging.ERROR
+    lvl = logging.WARNING
+    if opts.verbose:
+        lvl = logging.INFO
     if opts.debug:
         lvl = logging.DEBUG
 
-    logging.basicConfig(level=lvl)
+    fmt = '%(levelname)s: %(message)s'
+    logging.basicConfig(format=fmt, level=lvl)
 
     logging.debug('Init done')
     if len(args) == 0:
@@ -55,6 +58,11 @@ def main():
     logging.debug('Configuration dump: %s', cfg.as_dict())
 
     if not dir_integrity(work_dir, cfg):
+        sys.exit(1)
+
+    if not (cfg.generation or cfg.mutation or cfg.combination):
+        logging.error('Nothing to do, set at least one mode '
+            'in [global] section to 1')
         sys.exit(1)
 
 def dir_integrity(work_dir, cfg_obj):
@@ -93,11 +101,16 @@ def dir_integrity(work_dir, cfg_obj):
             logging.error('No read perms for: %s [%s]' % (d, abspath))
             failure = True
 
-    if cfg_obj.generation:
-        if not os.path.isdir(cfg_obj.gen_dir):
-            cfg_obj.generation = 0
-            logging.warning('%s option is set to 1 but no '
-                'gen_dir found, unsetting')
+    modes = ['generation', 'mutation', 'combination']
+    dirs =  ['gen_dir', 'mut_dir', 'comb_dir']
+
+    for mode,modedir in zip(modes, dirs):
+        if getattr(cfg_obj, mode):
+            if not os.path.isdir(getattr(cfg_obj, modedir)):
+                setattr(cfg_obj, mode, False)
+                logging.warning('%s option is set to 1 but no '
+                    '%s [%s] found, unsetting' % (mode, modedir,
+                    getattr(cfg_obj, modedir)))
 
 
     return not failure

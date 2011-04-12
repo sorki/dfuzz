@@ -19,9 +19,10 @@ class Config(object):
 
                 value = config.get(section, item).strip()
                 if value in ['0', '1']:
-                    value = True
                     if value == '0':
                         value = False
+                    else:
+                        value = True
 
                 setattr(self, attr_name, value)
                 self.__dict[attr_name] = value
