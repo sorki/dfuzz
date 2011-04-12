@@ -3,10 +3,11 @@ import ConfigParser
 
 
 class Config(object):
+    __dict = {}
+
     def __init__(self, path, filename='fuzz.conf'):
-        config = ConfigParser.RawConfigParser()
-        self._filepath = os.path.abspath(os.path.join(
-            os.path.expanduser(path), filename))
+        config = ConfigParser.SafeConfigParser()
+        self._filepath = os.path.join(path, filename)
         config.read(self._filepath)
 
         self._config = config
@@ -15,7 +16,17 @@ class Config(object):
                 attr_name = item
                 if section in ['generation', 'mutation', 'combination']:
                     attr_name = '%s_%s' % (section, item)
-                setattr(self, attr_name, config.get(section, item).strip())
+
+                value = config.get(section, item).strip()
+                if value in ['0', '1']:
+                    value = True
+                    if value == '0':
+                        value = False
+
+                setattr(self, attr_name, value)
+                self.__dict[attr_name] = value
         return
 
-settings = Config()
+    def as_dict(self):
+        ''' This won't reflect any updates '''
+        return self.__dict

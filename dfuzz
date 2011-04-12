@@ -5,7 +5,7 @@ import optparse
 import logging
 
 
-import cfgparse
+from core import conf
 
 USAGE = '%prog [options] <dir>'
 DESC = ''
@@ -16,6 +16,8 @@ def main():
         help='Increase verbosity')
     parser.add_option('-d', '--debug', action='store_true',
         help='Turn on debugging messages')
+    parser.add_option('-c', '--config', metavar='FNAME',
+        help='Configuration file name', default='fuzz.conf')
 
 
     (opts, args) = parser.parse_args()
@@ -27,6 +29,79 @@ def main():
     logging.basicConfig(level=lvl)
 
     logging.debug('Init done')
+    if len(args) == 0:
+        parser.error('no dir specified')
+
+    work_dir = os.path.abspath(os.path.expanduser(args[0]))
+    if not os.path.isdir(work_dir):
+        logging.error('No such dir: "%s"' % work_dir)
+        sys.exit(1)
+
+    logging.debug('Work dir %s', work_dir)
+    cfg_path = os.path.join(work_dir, opts.config)
+
+    if not os.path.isfile(cfg_path):
+        logging.error('Configuration file "%s" not found '
+            'in: "%s"' % (opts.config, work_dir))
+        sys.exit(1)
+
+    if not os.access(cfg_path, os.R_OK):
+        logging.error('Configuration file "%s" not readable, '
+            ' dir: "%s"' % (opts.config, work_dir))
+        sys.exit(1)
+
+
+    cfg = conf.Config(work_dir)
+    logging.debug('Configuration dump: %s', cfg.as_dict())
+
+    if not dir_integrity(work_dir, cfg):
+        sys.exit(1)
+
+def dir_integrity(work_dir, cfg_obj):
+    '''
+    Ensure work_dir integrity, update cfg_obj paths
+    to absolute paths if necessary, create log and incidents
+    sub directories
+    '''
+
+    sub_dirs = ['gen_dir', 'mut_dir', 'comb_dir', 
+        'log_dir', 'incidents_dir']
+
+    if not os.access(work_dir, os.W_OK):
+        logging.error('Work dir "%s" must be writable' % work_dir)
+        return False
+
+    failure = False
+
+    for d in sub_dirs:
+        path = getattr(cfg_obj, d)
+        if path[0] != '/':
+            abspath = os.path.join(work_dir, path)
+            setattr(cfg_obj, d, abspath)
+
+        if d in ['log_dir', 'incidents_dir']:
+            if not os.path.isdir(abspath):
+                logging.info('Creating dir: %s [%s]' % (d, path))
+                os.mkdir(abspath)
+
+            if not os.access(abspath, os.W_OK):
+                logging.error('No write perms for: %s [%s]' %
+                    (d, abspath))
+                failure = True
+
+        if os.path.isdir(abspath) and not os.access(abspath, os.R_OK):
+            logging.error('No read perms for: %s [%s]' % (d, abspath))
+            failure = True
+
+    if cfg_obj.generation:
+        if not os.path.isdir(cfg_obj.gen_dir):
+            cfg_obj.generation = 0
+            logging.warning('%s option is set to 1 but no '
+                'gen_dir found, unsetting')
+
+
+    return not failure
+
 
 if __name__ == "__main__":
     main()
