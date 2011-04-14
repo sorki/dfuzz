@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 import os
 import sys
-import optparse
+import random
 import logging
+import optparse
 
 
 from core import conf
@@ -63,6 +64,26 @@ def main():
             'in [global] section to 1 or create proper dirs')
         sys.exit(1)
 
+    low_priority = []
+    high_priority = []
+
+    add_valid_modules(high_priority, low_priority,
+        cfg.generation_modules, cfg.generation_priority)
+    add_valid_modules(high_priority, low_priority,
+        cfg.mutation_modules, cfg.mutation_priority)
+    add_valid_modules(high_priority, low_priority,
+        cfg.combination_modules, cfg.combination_priority)
+
+    random.shuffle(high_priority)
+    random.shuffle(low_priority)
+
+    print high_priority
+    print '---'
+    print low_priority
+    # load module, call init, repeat(call run_test, monitor process)
+    # threads ?
+
+
 def dir_integrity(work_dir, cfg_obj):
     '''
     Ensure work_dir integrity, update cfg_obj paths
@@ -113,6 +134,45 @@ def dir_integrity(work_dir, cfg_obj):
 
     return not failure
 
+def check_methods(cls, str_mod):
+    required_methods = ['set_up', 'run', 'tear_down']
+    for method in required_methods:
+        if not hasattr(cls, method):
+            logging.warning('"FuzzWrapper" class in module "%s"'
+                ' has no method "%s", skipping' % (str_mod, method))
+            return False
+
+    return True
+
+def validate_module(str_mod):
+    try:
+        mod = __import__(str_mod, fromlist=['a'])
+    except ImportError:
+        logging.warning('No such module: "%s", skipping' % str_mod)
+        return False
+
+    if hasattr(mod, 'FuzzWrapper'):
+        cls = getattr(mod, 'FuzzWrapper')
+        if check_methods(cls, str_mod):
+            return cls
+        else:
+            return False
+
+    logging.warning('Module "%s" has no "FuzzWrapper" class,'
+        ' skipping' % str_mod)
+    return False
+
+def add_valid_modules(high_prio, low_prio, str_mods, prior):
+    mod_strings = map(lambda x: x.strip(), str_mods.split(','))
+    for mod in mod_strings:
+        cls = validate_module(mod)
+        if not cls:
+            continue
+
+        if prior == 'high':
+            high_prio.append(cls)
+        else:
+            low_prio.append(cls)
 
 if __name__ == "__main__":
     main()
