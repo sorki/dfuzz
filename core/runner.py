@@ -53,6 +53,7 @@ class ModuleRunner(object):
         logging.debug('Instantiating class %s', cls)
         to_run = cls()
         tmp_dir_path = os.path.join(self.cfg.tmp_dir, str(to_run))
+
         logging.debug('[%s] Creating tmp dir [%s]', to_run, tmp_dir_path)
         if os.path.isdir(tmp_dir_path):
             shutil.rmtree(tmp_dir_path)
@@ -60,12 +61,14 @@ class ModuleRunner(object):
 
         inputs = self.get_inputs(to_run.method())
         for input_file_path in inputs:
-            logging.debug('[%s] Input file: "%s"', to_run, 
+            logging.debug('[%s] Input file: "%s"', to_run,
                 input_file_path)
             logging.debug('[%s] Set up phase', to_run)
             to_run.set_up(input_file_path, tmp_dir_path, params)
             logging.debug('[%s] Run phase', to_run)
-            to_run.run()
+            for file in to_run.run()():
+                logging.debug('[%s] Using fuzzed file "%s"', to_run,
+                    os.path.basename(file))
 
         if inputs == []:
             logging.warning('No input files for method "%s" found',
