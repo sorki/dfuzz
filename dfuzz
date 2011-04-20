@@ -6,7 +6,7 @@ import logging
 import optparse
 
 
-from core import conf
+from dfuzz.core import conf
 
 USAGE = '%prog [options] <dir>'
 DESC = ''
