@@ -1,9 +1,12 @@
 class FuzzWrapper(object):
-    def set_up():
+    def __str__(self):
+        return 'zzuf'
+
+    def set_up(self):
         pass
 
-    def run():
+    def run(self):
         pass
 
-    def tear_down():
+    def tear_down(self):
         pass

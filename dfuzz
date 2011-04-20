@@ -7,6 +7,7 @@ import optparse
 
 from dfuzz.core import conf
 from dfuzz.core import loader
+from dfuzz.core import runner
 
 USAGE = '%prog [options] <dir>'
 DESC = ''
@@ -76,6 +77,13 @@ def main():
     print mloader.high_priority
     print '---'
     print mloader.low_priority
+
+    mrunner = runner.ModuleRunner(mloader.high_priority,
+        mloader.low_priority)
+
+    mrunner.run()
+
+
     # load module, call init, repeat(call run_test, monitor process)
     # threads ?
 
