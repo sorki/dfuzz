@@ -86,7 +86,7 @@ def main():
 
 def dir_integrity(work_dir, cfg_obj):
     '''
-    Ensure work_dir integrity, update cfg_obj paths
+    Ensure `work_dir` integrity, update `cfg_obj` paths
     to absolute paths if necessary, create log and incidents
     sub directories
     '''
@@ -135,6 +135,13 @@ def dir_integrity(work_dir, cfg_obj):
     return not failure
 
 def check_methods(cls, str_mod):
+    '''
+    Check whether `cls` class implements all
+    the required methods.
+
+    Module string `str_mod` used for logging purposes.
+    '''
+
     required_methods = ['set_up', 'run', 'tear_down']
     for method in required_methods:
         if not hasattr(cls, method):
@@ -145,6 +152,13 @@ def check_methods(cls, str_mod):
     return True
 
 def validate_module(str_mod):
+    '''
+    Try to import and load `str_mod` module,
+    check required methods.
+
+    Returns class for valid classes, False otherwise.
+    '''
+
     try:
         mod = __import__(str_mod, fromlist=['a'])
     except ImportError:
@@ -163,6 +177,11 @@ def validate_module(str_mod):
     return False
 
 def add_valid_modules(high_prio, low_prio, str_mods, prior):
+    '''
+    Add valid modules from `str_mods` to `high_prio`
+    and `low_prio` lists according to their priority - `prior`
+    '''
+
     mod_strings = map(lambda x: x.strip(), str_mods.split(','))
     for mod in mod_strings:
         cls = validate_module(mod)
