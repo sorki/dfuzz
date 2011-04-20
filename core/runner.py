@@ -1,4 +1,5 @@
 import os
+import re
 import shutil
 import logging
 
@@ -19,9 +20,17 @@ class ModuleRunner(object):
         out = []
         dir_path = getattr(self.cfg, "%s_dir" % method)
         dir_mask = getattr(self.cfg, "%s_dir_mask" % method)
+        pattern = '^%s$' % dir_mask.replace('*', '.*')
+
         for root, dirs, files in os.walk(dir_path):
             for name in files:
+                if re.match(pattern, name) == None:
+                    logging.debug('File "%s" doesn\'t match '
+                        'the mask "%s"', name, dir_mask)
+                    continue
+
                 out.append(os.path.join(root,name))
+
 
         return out
 
