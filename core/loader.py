@@ -65,13 +65,21 @@ class ModuleLoader(object):
         their priority - `prior`
         '''
 
-        mod_strings = map(lambda x: x.strip(), str_mods.split(','))
+        mod_strings = map(lambda x: x.strip(), str_mods.split(';'))
+
+        # creates (cls, [params]) tuple
+
         for mod in mod_strings:
+            params = []
+            if '(' in mod:
+                mod, params = mod.split('(')
+                params = map(lambda x: x.strip(),
+                    params[:-1].split(','))
             cls = self.validate_module(mod)
             if not cls:
                 continue
 
             if prior == 'high':
-                self.high_priority.append(cls)
+                self.high_priority.append((cls, params))
             else:
-                self.low_priority.append(cls)
+                self.low_priority.append((cls, params))

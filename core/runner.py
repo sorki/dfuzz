@@ -12,9 +12,11 @@ class ModuleRunner(object):
             self.run_single(cls)
         # TODO: spawn low priority
 
-    def run_single(self, cls):
+    def run_single(self, cls_tuple):
+        cls, params = cls_tuple
         logging.debug('Instantiating class %s', cls)
         to_run = cls()
+        logging.debug('[%s] Creating tmp dir', to_run)
         logging.debug('[%s] Set up phase', to_run)
         to_run.set_up()
         logging.debug('[%s] Run phase', to_run)
