@@ -1,9 +1,10 @@
 import logging
 
 class ModuleRunner(object):
-    def __init__(self, high_prio, low_prio):
+    def __init__(self, cfg, high_prio, low_prio):
         self.high_priority = high_prio
         self.low_priority  = low_prio
+        self.cfg = cfg
 
     def run(self):
         # spawn threads each running one module
@@ -18,7 +19,7 @@ class ModuleRunner(object):
         to_run = cls()
         logging.debug('[%s] Creating tmp dir', to_run)
         logging.debug('[%s] Set up phase', to_run)
-        to_run.set_up()
+        to_run.set_up(params)
         logging.debug('[%s] Run phase', to_run)
         to_run.run()
         logging.debug('[%s] Tear down phase', to_run)

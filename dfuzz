@@ -78,7 +78,7 @@ def main():
     print '---'
     print mloader.low_priority
 
-    mrunner = runner.ModuleRunner(mloader.high_priority,
+    mrunner = runner.ModuleRunner(cfg, mloader.high_priority,
         mloader.low_priority)
 
     mrunner.run()
