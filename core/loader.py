@@ -7,6 +7,11 @@ class ModuleLoader(object):
         self.low_priority = []
 
     def shuffle(self):
+        '''
+        Randomize order of `self.high_priority and
+        `self.low_priority` lists.
+        '''
+
         random.shuffle(self.high_priority)
         random.shuffle(self.low_priority)
 
@@ -70,4 +75,3 @@ class ModuleLoader(object):
                 self.high_priority.append(cls)
             else:
                 self.low_priority.append(cls)
-
