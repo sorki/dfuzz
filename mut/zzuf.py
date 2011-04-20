@@ -2,7 +2,7 @@ class FuzzWrapper(object):
     def __str__(self):
         return 'zzuf'
 
-    def set_up(self, params):
+    def set_up(self, tmp_dir_path, params):
         pass
 
     def run(self):

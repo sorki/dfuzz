@@ -18,11 +18,11 @@ class ModuleRunner(object):
         cls, params = cls_tuple
         logging.debug('Instantiating class %s', cls)
         to_run = cls()
-        logging.debug('[%s] Creating tmp dir', to_run)
         tmp_dir_path = os.path.join(self.cfg.tmp_dir, str(to_run))
+        logging.debug('[%s] Creating tmp dir [%s]', to_run, tmp_dir_path)
         os.mkdir(tmp_dir_path)
         logging.debug('[%s] Set up phase', to_run)
-        to_run.set_up(params)
+        to_run.set_up(tmp_dir_path, params)
         logging.debug('[%s] Run phase', to_run)
         to_run.run()
         logging.debug('[%s] Tear down phase', to_run)
