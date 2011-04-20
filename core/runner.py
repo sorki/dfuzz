@@ -10,6 +10,10 @@ class ModuleRunner(object):
         self.cfg = cfg
 
     def run(self):
+        '''
+        Spawn threads according to configuration.
+        '''
+
         # spawn threads each running one module
         # TODO: thread priority
         for cls in self.high_priority:
@@ -17,6 +21,13 @@ class ModuleRunner(object):
         # TODO: spawn low priority
 
     def get_inputs(self, method):
+        '''
+        Get input files list from input directory
+        corresponding to the used method (`method`_dir).
+
+        Filter files according to `method`_dir_mask.
+        '''
+
         out = []
         dir_path = getattr(self.cfg, "%s_dir" % method)
         dir_mask = getattr(self.cfg, "%s_dir_mask" % method)
@@ -31,10 +42,13 @@ class ModuleRunner(object):
 
                 out.append(os.path.join(root,name))
 
-
         return out
 
     def run_single(self, cls_tuple):
+        '''
+        Set up and run single instance of the class.
+        '''
+
         cls, params = cls_tuple
         logging.debug('Instantiating class %s', cls)
         to_run = cls()
@@ -61,4 +75,3 @@ class ModuleRunner(object):
         to_run.tear_down()
         logging.debug('[%s] Remove tmp dir', to_run)
         os.rmdir(tmp_dir_path)
-
