@@ -1,4 +1,8 @@
-class FuzzWrapper(object):
+import os
+
+from dfuzz.core import wrapper
+
+class FuzzWrapper(wrapper.DfuzzWrapper):
     def __str__(self):
         return 'zzuf'
 
@@ -11,11 +15,11 @@ class FuzzWrapper(object):
         self.zzuf_params = params
 
     def run(self):
+        out_path = os.path.join(self.output, 'zzuf.cfg')
         def generator():
-            # exec zzuf
-            # return outputfname
             for name in range(10):
-                yield self.output + str(name)
+                self.system('zzuf < %s > %s' % (self.input, out_path))
+                yield out_path
 
         return generator
 
