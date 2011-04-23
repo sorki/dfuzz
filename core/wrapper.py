@@ -9,7 +9,7 @@ class DfuzzWrapper(object):
 
     def system(self, command):
         logging.debug('Executing: %s', command)
-        pr = subprocess.Popen(command, shell=True, 
+        pr = subprocess.Popen(command, shell=True,
             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         retcode = pr.wait()
         (stdout, stderr) = pr.communicate()
