@@ -20,7 +20,7 @@ class DfuzzWrapper(object):
         return 'undefined wrapper, add __str__ method'
 
     def system(self, command):
-        logging.debug('Executing: %s' % command)
+        logging.debug('Executing: %s', command)
         pr = subprocess.Popen(command, shell=True, 
             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         retcode = pr.wait()
