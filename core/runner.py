@@ -66,9 +66,16 @@ class ModuleRunner(object):
             logging.debug('[%s] Set up phase', to_run)
             to_run.set_up(input_file_path, tmp_dir_path, params)
             logging.debug('[%s] Run phase', to_run)
-            for file in to_run.run()():
+            generator = to_run.run()
+            if generator is None:
+                logging.error('[%s] Terminating due to an error',
+                    to_run)
+                break
+
+            for file in generator():
                 logging.debug('[%s] Using fuzzed file "%s"', to_run,
                     os.path.basename(file))
+                # TODO (major): no_fuzz_file implementation
 
         if inputs == []:
             logging.warning('No input files for method "%s" found',

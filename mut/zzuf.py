@@ -1,4 +1,5 @@
 import os
+import logging
 
 from dfuzz.core import wrapper
 
@@ -19,6 +20,13 @@ class FuzzWrapper(wrapper.DfuzzWrapper):
         self.seed_range = (2, 7)
 
     def run(self):
+        try:
+            self.system('zzzuf -V')
+        except wrapper.SyscallException as e:
+            logging.error('Unable to call "zzuf -V", is zzuf'
+                ' installed? Exception: %s', e)
+            return None
+
         out_path = os.path.join(self.output, 'zzuf.cfg')
         def generator():
             for seed in range(*self.seed_range):
