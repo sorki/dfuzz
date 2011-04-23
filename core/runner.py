@@ -47,6 +47,9 @@ class ModuleRunner(object):
     def run_single(self, cls_tuple):
         '''
         Set up and run single instance of the class.
+        This takes the input files, runs each of them through
+        specific fuzzer (wrapper) and runs the executable
+        with fuzzed input (via TargetRunner class).
         '''
 
         cls, params = cls_tuple
