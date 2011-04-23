@@ -73,6 +73,11 @@ class ModuleRunner(object):
                 break
 
             for file in generator():
+                if file is None:
+                    logging.error('[%s] Skipping input file "%s" '
+                        'due to an error', input_file_path, to_run)
+                    break
+
                 logging.debug('[%s] Using fuzzed file "%s"', to_run,
                     os.path.basename(file))
                 # TODO (major): no_fuzz_file implementation

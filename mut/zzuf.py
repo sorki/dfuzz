@@ -21,7 +21,7 @@ class FuzzWrapper(wrapper.DfuzzWrapper):
 
     def run(self):
         try:
-            self.system('zzzuf -V')
+            self.system('zzuf -V')
         except wrapper.SyscallException as e:
             logging.error('Unable to call "zzuf -V", is zzuf'
                 ' installed? Exception: %s', e)
@@ -29,10 +29,21 @@ class FuzzWrapper(wrapper.DfuzzWrapper):
 
         out_path = os.path.join(self.output, 'zzuf.cfg')
         def generator():
+            error = False
             for seed in range(*self.seed_range):
-                self.system('zzuf -s%d -r%s < %s > %s' % (seed,
-                    '%s:%s' % self.ratio, self.input, out_path))
+
+                try:
+                    self.system('zzuf -s%d -r%s < %s > %s' % (seed,
+                        '%s:%s' % self.ratio, self.input, out_path))
+                except wrapper.SyscallException as e:
+                    logging.error('System call exception: %s', e)
+                    error = True
+                    break
+
                 yield out_path
+
+            if error:
+                yield None
 
         return generator
 
