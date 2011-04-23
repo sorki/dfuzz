@@ -2,6 +2,7 @@ import os
 import logging
 
 from dfuzz.core import wrapper
+from dfuzz.core import exceptions
 
 class FuzzWrapper(wrapper.DfuzzWrapper):
     def __str__(self):
@@ -22,7 +23,7 @@ class FuzzWrapper(wrapper.DfuzzWrapper):
     def run(self):
         try:
             self.system('zzuf -V')
-        except wrapper.SyscallException as e:
+        except exceptions.SyscallException as e:
             logging.error('Unable to call "zzuf -V", is zzuf'
                 ' installed? Exception: %s', e)
             return None
@@ -35,7 +36,7 @@ class FuzzWrapper(wrapper.DfuzzWrapper):
                 try:
                     self.system('zzuf -s%d -r%s < %s > %s' % (seed,
                         '%s:%s' % self.ratio, self.input, out_path))
-                except wrapper.SyscallException as e:
+                except exceptions.SyscallException as e:
                     logging.error('System call exception: %s', e)
                     error = True
                     break

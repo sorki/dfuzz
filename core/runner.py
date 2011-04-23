@@ -93,3 +93,12 @@ class ModuleRunner(object):
         to_run.tear_down()
         logging.debug('[%s] Remove tmp dir', to_run)
         shutil.rmtree(tmp_dir_path)
+
+
+class TargetRunner(object):
+    def __init__(self, target, args=[]):
+        self.target = target
+        self.args = args
+
+    def run(self):
+        pass
