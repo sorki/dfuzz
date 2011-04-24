@@ -88,9 +88,11 @@ def main():
     mloader.add_valid_modules(cfg.combination_modules,
         cfg.combination_priority)
 
-    print mloader.high_priority
-    print '---'
-    print mloader.low_priority
+    logging.debug('Loaded modules:')
+    for mod in mloader.high_priority:
+        logging.debug('[high priority] %s, args: %s', *mod)
+    for mod in mloader.low_priority:
+        logging.debug('[low priority] %s, args: %s', *mod)
 
     mrunner = runner.ModuleRunner(cfg, mloader.high_priority,
         mloader.low_priority)
