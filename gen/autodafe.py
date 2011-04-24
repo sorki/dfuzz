@@ -1,6 +1,8 @@
 import os
+import logging
 
 from dfuzz.core import wrapper
+from dfuzz.core import exceptions
 
 class FuzzWrapper(wrapper.DfuzzWrapper):
     def __str__(self):
@@ -15,13 +17,35 @@ class FuzzWrapper(wrapper.DfuzzWrapper):
         self.autodafe_params = params
 
     def run(self):
-        out_path = os.path.join(self.output, 'zzuf.cfg')
-        self.system()
+        try:
+            self.system('adc %s %s' % (self.input,
+                os.path.join(self.output, 'autodafe_compiled.adc')))
+
+        except exceptions.SyscallException as e:
+            logging.error('Autodafe compilation failed. Exception:'
+                ' %s', e)
+            return None
+
+        adc_file = os.path.join(self.output, 'autodafe_compiled.adc')
+        try:
+            output = self.system('autodafe -v -f %s %s' % (self.output,
+                adc_file))
+
+        except exceptions.SyscallException as e:
+            logging.error('Autodafe file generation failed. '
+                'Exception: %s', e)
+            return None
+
+        output.split('\n')
+        os.remove(adc_file)
+
+        out_path = ''
         def generator():
-            for seed in range(*self.seed_range):
-                self.system('zzuf -s%d -r%s < %s > %s' % (seed,
-                    '%s:%s' % self.ratio, self.input, out_path))
-                yield out_path
+            for root, dirs, files in os.walk(self.output):
+                for name in files:
+                    if name == 'debugger.info':
+                        continue
+                    yield os.path.join(root, name)
 
         return generator
 
