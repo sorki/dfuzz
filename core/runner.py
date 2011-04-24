@@ -20,6 +20,10 @@ class ModuleRunner(object):
         # TODO: thread priority
         for cls in self.high_priority:
             self.run_single(cls)
+
+
+        for cls in self.low_priority:
+            self.run_single(cls)
         # TODO: spawn low priority
 
     def get_inputs(self, method):
