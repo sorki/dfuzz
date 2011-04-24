@@ -81,12 +81,15 @@ def main():
 
     mloader = loader.ModuleLoader()
 
-    mloader.add_valid_modules(cfg.generation_modules,
-        cfg.generation_priority)
-    mloader.add_valid_modules(cfg.mutation_modules,
-        cfg.mutation_priority)
-    mloader.add_valid_modules(cfg.combination_modules,
-        cfg.combination_priority)
+    if cfg.generation:
+        mloader.add_valid_modules(cfg.generation_modules,
+            cfg.generation_priority)
+    if cfg.mutation:
+        mloader.add_valid_modules(cfg.mutation_modules,
+            cfg.mutation_priority)
+    if cfg.combination:
+        mloader.add_valid_modules(cfg.combination_modules,
+            cfg.combination_priority)
 
     logging.debug('Loaded modules:')
     for mod in mloader.high_priority:
