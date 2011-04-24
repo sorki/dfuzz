@@ -11,13 +11,15 @@ class Target(object):
             self.args % {'input': input_file})
         logging.debug('Running %s', cmd)
 
-        proc = subprocess.Popen(cmd, shell=True,
+        proc = subprocess.Popen(cmd.split(' '),
+            env={'LIBC_FATAL_STDERR_': '1'},
             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         retcode = proc.wait()
-        import sys
-        if retcode != 0:
-            sys.exit(0)
         (stdout, stderr) = proc.communicate()
         logging.debug(retcode)
         logging.debug(stdout)
+        logging.debug(stderr)
+        if retcode != 0:
+            pass
+            # incident
