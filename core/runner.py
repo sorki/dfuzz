@@ -77,7 +77,8 @@ class ModuleRunner(object):
             logging.debug('[%s] Run phase', to_run)
             generator = to_run.run()
             if generator is None:
-                logging.error('[%s] Terminating due to an error',
+                logging.error('[%s] Terminating due to an error, '
+                    ' no files supplied by the wrapper',
                     to_run)
                 break
 
