@@ -85,6 +85,10 @@ class ModuleRunner(object):
                     os.path.basename(file))
                 # TODO (major): no_fuzz_file implementation
 
+                targ = Target(self.cfg.binary, self.cfg.args)
+                targ.run(file)
+
+
         if inputs == []:
             logging.warning('No input files for method "%s" found',
                 to_run.method())
@@ -95,10 +99,12 @@ class ModuleRunner(object):
         shutil.rmtree(tmp_dir_path)
 
 
-class TargetRunner(object):
+class Target(object):
     def __init__(self, target, args=[]):
         self.target = target
         self.args = args
 
-    def run(self):
-        pass
+    def run(self, input_file):
+        cmd = '%s %s' % (self.target,
+            self.args % {'input': input_file})
+        print 'Running %s' % cmd

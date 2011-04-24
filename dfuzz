@@ -6,6 +6,7 @@ import optparse
 
 
 from dfuzz.core import conf
+from dfuzz.core import utils
 from dfuzz.core import loader
 from dfuzz.core import runner
 from dfuzz.core import sanity
@@ -65,6 +66,18 @@ def main():
         logging.error('Nothing to do, set at least one mode '
             'in [global] section to 1 or create proper dirs')
         sys.exit(1)
+
+    configured = cfg.binary
+    cfg.binary = sanity.find_binary(cfg.binary, work_dir)
+    if cfg.binary is None:
+        logging.error('Binary specified in config "%s" not '
+            'found (in %s, absolute path or $PATH) or permissions '
+            'not set correctly (read, execute)', configured,
+                work_dir)
+        sys.exit(1)
+
+    cfg.args = utils.parse_args(cfg.args)
+
 
     mloader = loader.ModuleLoader()
 

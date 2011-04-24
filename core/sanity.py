@@ -1,5 +1,6 @@
 import os
 import logging
+import subprocess
 
 def dir_integrity(work_dir, cfg_obj):
     '''
@@ -50,3 +51,38 @@ def dir_integrity(work_dir, cfg_obj):
 
 
     return not failure
+
+def find_binary(binary_str, work_dir):
+    '''
+    Try to find specified binary in:
+      - `work_dir` (specified in fuzz.conf)
+      - / (if it's already an absolute path)
+      - $PATH
+    Return absolute path to binary, None if not found.
+    '''
+    def valid(path):
+        return os.access(path, os.R_OK | os.X_OK)
+
+    # relative to work_dir
+    test_path = os.path.join(work_dir, binary_str)
+    if os.path.isfile(test_path):
+        if valid(test_path):
+            return test_path
+
+    # absolute
+    test_path = binary_str
+    if os.path.isfile(test_path):
+        if valid(test_path):
+            return test_path
+
+    # $PATH
+    pr = subprocess.Popen('which "%s"' % binary_str, shell=True,
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    retcode = pr.wait()
+    if retcode == 0:
+        test_path = pr.communicate()[0].strip()
+        if valid(test_path):
+            return test_path
+
+    return None
