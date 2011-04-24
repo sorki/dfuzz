@@ -11,8 +11,8 @@ class DfuzzWrapper(object):
         logging.debug('Executing: %s', command)
         pr = subprocess.Popen(command, shell=True,
             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        retcode = pr.wait()
         (stdout, stderr) = pr.communicate()
+        retcode = pr.poll()
         if retcode != 0:
             logging.error('Command "%s" returned nonzero value '
                 'try running it by hand', command)
