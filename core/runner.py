@@ -3,6 +3,8 @@ import re
 import shutil
 import logging
 
+from dfuzz.core import target
+
 class ModuleRunner(object):
     def __init__(self, cfg, high_prio, low_prio):
         self.high_priority = high_prio
@@ -85,7 +87,7 @@ class ModuleRunner(object):
                     os.path.basename(file))
                 # TODO (major): no_fuzz_file implementation
 
-                targ = Target(self.cfg.binary, self.cfg.args)
+                targ = target.Target(self.cfg.binary, self.cfg.args)
                 targ.run(file)
 
 
@@ -97,14 +99,3 @@ class ModuleRunner(object):
         to_run.tear_down()
         logging.debug('[%s] Remove tmp dir', to_run)
         shutil.rmtree(tmp_dir_path)
-
-
-class Target(object):
-    def __init__(self, target, args=[]):
-        self.target = target
-        self.args = args
-
-    def run(self, input_file):
-        cmd = '%s %s' % (self.target,
-            self.args % {'input': input_file})
-        print 'Running %s' % cmd
