@@ -1,3 +1,4 @@
+import shlex
 import logging
 import subprocess
 
@@ -11,12 +12,12 @@ class Target(object):
             self.args % {'input': input_file})
         logging.debug('Running %s', cmd)
 
-        proc = subprocess.Popen(cmd.split(' '),
+        proc = subprocess.Popen(shlex.split(cmd),
             env={'LIBC_FATAL_STDERR_': '1'},
             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-        retcode = proc.wait()
         (stdout, stderr) = proc.communicate()
+        retcode = proc.poll()
         logging.debug(retcode)
         logging.debug(stdout)
         logging.debug(stderr)
