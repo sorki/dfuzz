@@ -1,9 +1,9 @@
 __author__ = 'Richard Marko <rissko@gmail.com>'
 __status__ = 'beta'
-__version__ = '0.1'
+__version__ = '0.2'
 
 __title__ = 'dfuzz'
-__copyright__ = '(c) 2010 Richard Marko'
+__copyright__ = '(c) 2011 Richard Marko'
 __website__ = 'http://github.com/sorki/dfuzz'
 
 __description__ = 'Daemon configuration fuzzer'
