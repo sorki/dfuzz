@@ -102,9 +102,5 @@ def main():
 
     mrunner.run()
 
-
-    # load module, call init, repeat(call run_test, monitor process)
-    # threads ?
-
 if __name__ == "__main__":
     main()
