@@ -1,3 +1,4 @@
+import re
 import random
 import logging
 
@@ -70,11 +71,22 @@ class ModuleLoader(object):
         # creates (cls, [params]) tuple
 
         for mod in mod_strings:
+            if len(mod) == 0:
+                continue
+
             params = []
             if '(' in mod:
-                mod, params = mod.split('(')
+                match = re.search('(.*)\((.*)\).*', mod)
+                if match == None:
+                    logging.warning('Bad format for module '
+                        'parameters: %s. Skipping', mod)
+                    continue
+
+                mod = match.group(1).strip()
+                params = match.group(2).strip()
                 params = map(lambda x: x.strip(),
-                    params[:-1].split(','))
+                    params.split(','))
+
             cls = self.validate_module(mod)
             if not cls:
                 continue
