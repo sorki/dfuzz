@@ -5,18 +5,7 @@ import tempfile
 import unittest
 
 from dfuzz.core import sanity
-
-class dummyCfg(object):
-    def __init__(self):
-        self.generation = True
-        self.gen_dir = 'gen'
-        self.mutation = True
-        self.mut_dir = 'mut'
-        self.combination = True
-        self.comb_dir = 'comb'
-        self.log_dir = 'log'
-        self.incidents_dir = 'fails'
-        self.tmp_dir = 'tmp'
+from dfuzz.tests.dummy import sanity_cfg
 
 class testFindBinary(unittest.TestCase):
     def setUp(self):
@@ -48,7 +37,7 @@ class testFindBinary(unittest.TestCase):
 class testDirIntegrity(unittest.TestCase):
     def setUp(self):
         self.test_dir = tempfile.mkdtemp()
-        self.cfg = dummyCfg()
+        self.cfg = sanity_cfg.dummyCfg()
 
     def tearDown(self):
         shutil.rmtree(self.test_dir)
