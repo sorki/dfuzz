@@ -8,7 +8,9 @@ def get_suite():
     logging.disable(logging.CRITICAL)
     ts = unittest.TestSuite()
     loader = unittest.TestLoader()
-    classes = [test_sanity.testSanity,]
+    classes = [
+        test_sanity.testFindBinary,
+        test_sanity.testDirIntegrity]
 
     for cls in classes:
         ts.addTest(loader.loadTestsFromTestCase(cls))

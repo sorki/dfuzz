@@ -18,18 +18,11 @@ class dummyCfg(object):
         self.incidents_dir = 'fails'
         self.tmp_dir = 'tmp'
 
-class testSanity(unittest.TestCase):
+class testFindBinary(unittest.TestCase):
     def setUp(self):
         self.binary = 'passwd'
         self.binary_path = os.path.join('/usr', 'bin')
         self.whole = os.path.join(self.binary_path, self.binary)
-
-        self.test_dir = tempfile.mkdtemp()
-
-        self.cfg = dummyCfg()
-
-    def tearDown(self):
-        shutil.rmtree(self.test_dir)
 
     def test_find_binary_relative(self):
         '''
@@ -51,6 +44,14 @@ class testSanity(unittest.TestCase):
         '''
         ret = sanity.find_binary(self.binary, '/home')
         self.assertEqual(ret, self.whole)
+
+class testDirIntegrity(unittest.TestCase):
+    def setUp(self):
+        self.test_dir = tempfile.mkdtemp()
+        self.cfg = dummyCfg()
+
+    def tearDown(self):
+        shutil.rmtree(self.test_dir)
 
     def test_dir_integrity_writable_wd(self):
         '''
@@ -112,6 +113,10 @@ class testSanity(unittest.TestCase):
         self.assertEqual(self.cfg.incidents_dir, inc_abs)
 
     def _change_perms(self, partial):
+        '''
+        Create `partial` subdir in self.test_dir directory,
+        drop permissions and call dir_integrity.
+        '''
         abs_path = os.path.join(self.test_dir, partial)
         os.mkdir(abs_path)
         os.chmod(abs_path, 0)
