@@ -20,6 +20,7 @@ def dir_integrity(work_dir, cfg_obj):
 
     for d in sub_dirs:
         path = getattr(cfg_obj, d)
+        abspath = path
         if path[0] != '/':
             abspath = os.path.join(work_dir, path)
             setattr(cfg_obj, d, abspath)

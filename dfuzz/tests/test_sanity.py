@@ -52,7 +52,7 @@ class testSanity(unittest.TestCase):
         ret = sanity.find_binary(self.binary, '/home')
         self.assertEqual(ret, self.whole)
 
-    def test_dir_integrity_writable(self):
+    def test_dir_integrity_writable_wd(self):
         '''
         Test whether integrity fails if work_dir
         is not writable.
@@ -110,6 +110,30 @@ class testSanity(unittest.TestCase):
         self.assertEqual(self.cfg.tmp_dir, tmp_abs)
         self.assertEqual(self.cfg.log_dir, log_abs)
         self.assertEqual(self.cfg.incidents_dir, inc_abs)
+
+    def _change_perms(self, partial):
+        abs_path = os.path.join(self.test_dir, partial)
+        os.mkdir(abs_path)
+        os.chmod(abs_path, 0)
+        ret = sanity.dir_integrity(self.test_dir, self.cfg)
+        os.chmod(abs_path, 777)
+
+        return ret
+
+    def test_dir_integrity_readable(self):
+        for partial in [self.cfg.gen_dir, self.cfg.mut_dir,
+            self.cfg.comb_dir]:
+
+            ret = self._change_perms(partial)
+            self.assertEqual(ret, False)
+
+    def test_dir_integrity_writable_log(self):
+        ret = self._change_perms(self.cfg.log_dir)
+        self.assertEqual(ret, False)
+
+    def test_dir_integrity_writable_inc(self):
+        ret = self._change_perms(self.cfg.incidents_dir)
+        self.assertEqual(ret, False)
 
 if __name__ == "__main__":
     unittest.main()
