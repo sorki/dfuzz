@@ -4,6 +4,7 @@ import unittest
 
 import test_sanity
 import test_loader
+import test_utils
 
 def get_suite():
     logging.disable(logging.CRITICAL)
@@ -12,7 +13,8 @@ def get_suite():
     classes = [
         test_sanity.testFindBinary,
         test_sanity.testDirIntegrity,
-        test_loader.testLoader]
+        test_loader.testLoader,
+        test_utils.testUtils]
 
     for cls in classes:
         ts.addTest(loader.loadTestsFromTestCase(cls))
