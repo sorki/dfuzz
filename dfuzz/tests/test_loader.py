@@ -6,12 +6,6 @@ from dfuzz.tests.dummy import incomplete_wrapper
 from dfuzz.tests.dummy import complete_wrapper
 from dfuzz.tests.dummy import standard_wrapper
 
-class FuzzWraper(object):
-    ''' 
-    Dumb wrapper class used for testing
-    '''
-    pass
-
 class testLoader(unittest.TestCase):
     def setUp(self):
         self.ml = loader.ModuleLoader()
