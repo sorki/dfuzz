@@ -1,20 +1,8 @@
-import shlex
-
 def parse_args(str_args, mapping={'FUZZED_FILE': '%(input)s'}):
     '''
-    Decompose args string, replace keywords with
-    python string formatting tokens and recompose back
-    to string.
+    Replace keywords with python string formatting tokens.
     '''
-    split = map(lambda x: x.strip(), shlex.split(str_args))
-    new = []
-    for i in split:
-        if i in mapping:
-            new.append(mapping[i])
-            del mapping[i]
-        else:
-            new.append(i)
+    for key, value in mapping.iteritems():
+        str_args = str_args.replace(key, value)
 
-    return ' '.join(new)
-
-
+    return str_args
