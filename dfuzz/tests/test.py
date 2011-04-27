@@ -5,6 +5,7 @@ import unittest
 import test_sanity
 
 def get_suite():
+    logging.disable(logging.CRITICAL)
     ts = unittest.TestSuite()
     loader = unittest.TestLoader()
     classes = [test_sanity.testSanity,]
