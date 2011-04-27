@@ -54,6 +54,8 @@ setup(name=NAME,
         package_dir={'dfuzz': 'dfuzz'},
         packages=packages,
         package_data={'dfuzz': data_files},
+        test_suite='dfuzz.tests.test.get_suite',
+
         zip_safe=False,
 
         # TODO (minor): add classifiers
