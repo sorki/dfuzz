@@ -3,13 +3,13 @@ import logging
 
 class Incident(object):
     def __init__(self):
-        self.crash_signals('''
+        self.crash_signals = '''
         SIGILL
         SIGABRT
         SIGBUS
         SIGFPE
         SIGSEGV
-        ''')
+        '''
 
     @property
     def crash_signals(self):
@@ -33,9 +33,13 @@ class Incident(object):
             if ',' in value:
                 sep = ','
 
+            value = value.replace('\n', ' ')
+
             parts = map(lambda x: x.strip(), value.split(sep))
             new = []
             for i in parts:
+                if len(i)==0:
+                    continue
                 if hasattr(signal, str(i)):
                     new.append(getattr(signal, str(i)))
                 else:
@@ -43,3 +47,6 @@ class Incident(object):
                         'in signal module', i)
 
             self._crash_signals = new
+
+    def serious(self, retcode):
+        return retcode in self.crash_signals
