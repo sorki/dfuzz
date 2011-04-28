@@ -14,6 +14,7 @@ def get_suite():
     classes = [
         test_sanity.testFindBinary,
         test_sanity.testDirIntegrity,
+        test_sanity.testValidators,
         test_loader.testLoader,
         test_utils.testUtils,
         test_incident.testIncident]

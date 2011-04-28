@@ -6,6 +6,7 @@ import unittest
 
 from dfuzz.core import sanity
 from dfuzz.tests.dummy import sanity_cfg
+from dfuzz.tests.dummy import sanity_cfg_validators as scv
 
 class testFindBinary(unittest.TestCase):
     def setUp(self):
@@ -128,6 +129,12 @@ class testDirIntegrity(unittest.TestCase):
     def test_dir_integrity_writable_inc(self):
         ret = self._change_perms(self.cfg.incidents_dir)
         self.assertEqual(ret, False)
+
+class testValidators(unittest.TestCase):
+    def test_required(self):
+        self.assertFalse(sanity.check_required(scv.empty()))
+        self.assertFalse(sanity.check_required(scv.invalid()))
+        self.assertTrue(sanity.check_required(scv.valid()))
 
 if __name__ == "__main__":
     unittest.main()
