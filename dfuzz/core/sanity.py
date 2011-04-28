@@ -88,20 +88,58 @@ def find_binary(binary_str, work_dir):
 
     return None
 
+def check_required(cfg_obj):
+    '''
+    Check for required values in cfg object.
+    '''
+    req_fields = ['binary', 'args']
+    for r in req_fields:
+        if not hasattr(cfg_obj, r):
+            return False
+
+        if len(getattr(cfg_obj, r)) == 0:
+            return False
+
+    return True
+
 def value_validator(cfg_obj):
     '''
-    Check for invalid values in cfg object.
+    Validate values in cfg object.
 
     Returns False if there are any.
     '''
 
-    va_dict = { 'use_no_fuzz': [False, 'prepend', 'append'] }
+    va_dict = {
+        'use_no_fuzz' : [False, 'prepend', 'append'],
+        'threads'     : int,
+        'timeout'     : float,
+        'generation'  : int,
+        'mutation'    : int,
+        'combination' : int,
+        'generation_priority'  : ['low', 'high'],
+        'mutation_priority'    : ['low', 'high'],
+        'combination_priority' : ['low', 'high'],
+    }
+
+    # TODO (normal): validate incident_format
+
 
     for k,v in va_dict.iteritems():
-        if getattr(cfg_obj, k) not in v:
-            logging.error('Config parse error. Property "%s"'
-                ' set to undefined value "%s". Valid values: "%s"',
-                k, getattr(cfg_obj, k), '" "'.join(v))
-            return False
+        val = getattr(cfg_obj, k)
+        if type(v) == list:
+            if val not in v:
+                logging.error('Config parse error. Property "%s"'
+                    ' set to undefined value "%s".'
+                    ' Valid values: "%s"',
+                    k, getattr(cfg_obj, k), '" "'.join(v))
+                return False
+        elif v in [int, float]:
+            try:
+                v(val)
+            except ValueError as e:
+                logging.error('Config parse error. Property "%s"'
+                    ' has wrong type. Expected type: "%s"',
+                    k, v)
+                return False
 
     return True
