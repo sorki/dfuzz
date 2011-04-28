@@ -4,6 +4,7 @@ try:
     from setuptools import setup
 except ImportError:
     from distutils.core import setup
+from distutils.command.install import INSTALL_SCHEMES
 
 
 NAME = 'dfuzz'
@@ -33,33 +34,34 @@ for dirpath, dirnames, filenames in os.walk(srcdir):
             pkg = pkg.replace(os.path.altsep, '.')
         packages.append(pkg)
     elif filenames:
-        prefix = dirpath[(len(srcdir)+1):] # Strip "$srcdir/" or "$srcdir\"
-        for f in filenames:
-            data_files.append(os.path.join(prefix, f))
-
+        data_files.append([dirpath,
+            [os.path.join(dirpath, f) for f in filenames]])
 
 f = open(os.path.join(os.path.dirname(__file__), 'README.rst'))
 long_description = f.read().strip()
 f.close()
 
+# put data files to the same path as sources
+for scheme in INSTALL_SCHEMES.values(): 
+    scheme['data'] = scheme['purelib'] 
 
 setup(name=NAME,
-        version=VERSION,
-        description='dfuzz - automated daemon fuzzer',
-        long_description=long_description,
-        author='Richard Marko',
-        author_email='rissko@gmail.com',
-        url='http://github.com/sorki/dfuzz',
-        scripts=['dfuzz/dfuzz'],
-        package_dir={'dfuzz': 'dfuzz'},
-        packages=packages,
-        package_data={'dfuzz': data_files},
-        test_suite='dfuzz.tests.test.get_suite',
+    version=VERSION,
+    description='dfuzz - automated daemon fuzzer',
+    long_description=long_description,
+    author='Richard Marko',
+    author_email='rissko@gmail.com',
+    url='http://github.com/sorki/dfuzz',
+    scripts=['dfuzz/dfuzz'],
+    package_dir={'dfuzz': 'dfuzz'},
+    packages=packages,
+    data_files=data_files,
+    test_suite='dfuzz.tests.test.get_suite',
 
-        zip_safe=False,
+    zip_safe=False,
 
-        # TODO (minor): add classifiers
-        classifiers=['Development Status :: 4 - Beta',
-                   'Operating System :: OS Independent',
-                   'Programming Language :: Python',]
+    # TODO (minor): add classifiers
+    classifiers=['Development Status :: 4 - Beta',
+               'Operating System :: OS Independent',
+               'Programming Language :: Python',]
     )
