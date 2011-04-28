@@ -50,3 +50,7 @@ class Incident(object):
 
     def serious(self, retcode):
         return retcode in self.crash_signals
+
+    def check(self, target_obj):
+        if self.serious(target_obj.code):
+            logging.error('Failure')

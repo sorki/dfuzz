@@ -4,6 +4,7 @@ import shutil
 import logging
 
 from dfuzz.core import target
+from dfuzz.core import incident
 
 class ModuleRunner(object):
     def __init__(self, cfg, high_prio, low_prio):
@@ -94,6 +95,9 @@ class ModuleRunner(object):
 
                 targ = target.Target(self.cfg.binary, self.cfg.args)
                 targ.run(file)
+
+                inc = incident.Incident()
+                inc.check(targ)
 
 
         if inputs == []:
