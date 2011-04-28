@@ -16,9 +16,30 @@ class FuzzWrapper(wrapper.DfuzzWrapper):
         self.output = tmp_dir_path
         self.zzuf_params = params
 
-        # TODO (major): parse zzuf_params
-        self.ratio = (.004, .01)
-        self.seed_range = (2, 7)
+        # defaults
+        ratio_start = .004
+        ratio_end = .01
+        seed_max = 10000
+
+        try:
+            if len(self.zzuf_params) == 2:
+                ratio_start = float(self.zzuf_params[0])
+                ratio_end = ratio_start + 0.001
+                seed_max = self.zzuf_params[1]
+            elif len(self.zzuf_params) == 3:
+                ratio_start = float(self.zzuf_params[0])
+                ratio_end = float(self.zzuf_params[1])
+                seed_max = self.zzuf_params[2]
+            else:
+                logging.warning('Wrong %s parameter format,'
+                    ' using defaults.', self)
+        except ValueError as e:
+            logging.warning('Unable to parse attributes'
+                ' passed to %s. Using default values. '
+                ' Check your config. Exception: %s', self, e)
+
+        self.ratio = (ratio_start, ratio_end)
+        self.seed_range = (0, int(seed_max))
 
     def run(self):
         try:
