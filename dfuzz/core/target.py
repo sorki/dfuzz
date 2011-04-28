@@ -7,6 +7,10 @@ class Target(object):
         self.target = target
         self.args = args
 
+        self.stderr = ''
+        self.stdout = ''
+        self.code = 0
+
     def run(self, input_file):
         cmd = '%s %s' % (self.target,
             self.args % {'input': input_file})
@@ -16,11 +20,5 @@ class Target(object):
             env={'LIBC_FATAL_STDERR_': '1'},
             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-        (stdout, stderr) = proc.communicate()
-        retcode = proc.poll()
-        logging.debug(retcode)
-        logging.debug(stdout)
-        logging.debug(stderr)
-        if retcode != 0:
-            pass
-            # incident
+        (self.stdout, self.stderr) = proc.communicate()
+        self.retcode = proc.poll()
