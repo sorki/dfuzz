@@ -95,13 +95,13 @@ def value_validator(cfg_obj):
     Returns False if there are any.
     '''
 
-    va_dict = { 'use_no_fuzz': ['0', 'prepend', 'append'] }
+    va_dict = { 'use_no_fuzz': [False, 'prepend', 'append'] }
 
     for k,v in va_dict.iteritems():
         if getattr(cfg_obj, k) not in v:
             logging.error('Config parse error. Property "%s"'
-                ' set to undefined value. Valid values: "%s"',
-                k, '" "'.join(v))
+                ' set to undefined value "%s". Valid values: "%s"',
+                k, getattr(cfg_obj, k), '" "'.join(v))
             return False
 
     return True
