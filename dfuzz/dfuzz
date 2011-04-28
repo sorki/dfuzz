@@ -59,6 +59,8 @@ def main():
     cfg = conf.Config(work_dir)
     logging.debug('Configuration dump: %s', cfg.as_dict())
 
+    if not sanity.value_validator(cfg):
+        sys.exit(1)
     if not sanity.dir_integrity(work_dir, cfg):
         sys.exit(1)
 

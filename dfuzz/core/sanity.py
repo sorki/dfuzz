@@ -87,3 +87,21 @@ def find_binary(binary_str, work_dir):
             return test_path
 
     return None
+
+def value_validator(cfg_obj):
+    '''
+    Check for invalid values in cfg object.
+
+    Returns False if there are any.
+    '''
+
+    va_dict = { 'use_no_fuzz': ['0', 'prepend', 'append'] }
+
+    for k,v in va_dict.iteritems():
+        if getattr(cfg_obj, k) not in v:
+            logging.error('Config parse error. Property "%s"'
+                ' set to undefined value. Valid values: "%s"',
+                k, '" "'.join(v))
+            return False
+
+    return True
