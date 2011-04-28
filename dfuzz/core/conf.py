@@ -24,10 +24,7 @@ class Config(object):
 
                 value = config.get(section, item).strip()
                 if value in ['0', '1']:
-                    if value == '0':
-                        value = False
-                    else:
-                        value = True
+                    value = bool(int(value))
 
                 setattr(self, attr_name, value)
                 self.__dict[attr_name] = value
