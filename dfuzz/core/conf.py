@@ -1,12 +1,17 @@
 import os
 import ConfigParser
 
+import dfuzz
 
 class Config(object):
     __dict = {}
 
     def __init__(self, path, filename='fuzz.conf'):
         config = ConfigParser.SafeConfigParser()
+        def_cfg_path = os.path.join(
+            os.path.dirname(dfuzz.__file__), 'cfg/defaults.ini')
+        with open(def_cfg_path) as f:
+            config.readfp(f)
         self._filepath = os.path.join(path, filename)
         config.read(self._filepath)
 
@@ -30,4 +35,5 @@ class Config(object):
 
     def as_dict(self):
         ''' This won't reflect any updates '''
+        # TODO (minor): make it reflect the updates
         return self.__dict
