@@ -93,6 +93,7 @@ class ModuleRunner(object):
                     os.path.basename(file))
                 # TODO (major): no_fuzz_file implementation
 
+                # TODO (minor): configurable classes
                 targ = target.Target(self.cfg.binary, self.cfg.args)
                 targ.run(file)
 

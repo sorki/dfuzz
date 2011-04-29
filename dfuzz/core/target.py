@@ -16,6 +16,7 @@ class Target(object):
             self.args % {'input': input_file})
         logging.debug('Running %s', cmd)
 
+        # TODO (major): timeouts
         proc = subprocess.Popen(shlex.split(cmd),
             env={'LIBC_FATAL_STDERR_': '1'},
             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
