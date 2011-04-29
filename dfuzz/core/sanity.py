@@ -134,7 +134,7 @@ def value_validator(cfg_obj):
                 logging.error('Config parse error. Property "%s"'
                     ' set to undefined value "%s".'
                     ' Valid values: "%s"',
-                    k, getattr(cfg_obj, k), '" "'.join(v))
+                    k, getattr(cfg_obj, k), '" "'.join(map(str, v)))
                 return False
         elif v in [int, float]:
             try:
