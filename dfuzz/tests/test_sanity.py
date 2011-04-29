@@ -39,6 +39,7 @@ class testDirIntegrity(unittest.TestCase):
     def setUp(self):
         self.test_dir = tempfile.mkdtemp()
         self.cfg = sanity_cfg.dummyCfg()
+        self.cfg.work_dir = self.test_dir
 
     def tearDown(self):
         shutil.rmtree(self.test_dir)
@@ -49,7 +50,7 @@ class testDirIntegrity(unittest.TestCase):
         is not writable.
         '''
         os.chmod(self.test_dir, 555)
-        ret = sanity.dir_integrity(self.test_dir, object)
+        ret = sanity.dir_integrity(self.cfg)
         os.chmod(self.test_dir, 777)
         self.assertEqual(ret, False)
 
@@ -58,7 +59,7 @@ class testDirIntegrity(unittest.TestCase):
         Test whether modes get disabled if no matching
         input dir found.
         '''
-        ret = sanity.dir_integrity(self.test_dir, self.cfg)
+        ret = sanity.dir_integrity(self.cfg)
         self.assertEqual(self.cfg.generation, False)
         self.assertEqual(self.cfg.mutation, False)
         self.assertEqual(self.cfg.combination, False)
@@ -71,7 +72,7 @@ class testDirIntegrity(unittest.TestCase):
         os.mkdir(os.path.join(self.test_dir, self.cfg.gen_dir))
         os.mkdir(os.path.join(self.test_dir, self.cfg.mut_dir))
         os.mkdir(os.path.join(self.test_dir, self.cfg.comb_dir))
-        ret = sanity.dir_integrity(self.test_dir, self.cfg)
+        ret = sanity.dir_integrity(self.cfg)
         self.assertEqual(self.cfg.generation, True)
         self.assertEqual(self.cfg.mutation, True)
         self.assertEqual(self.cfg.combination, True)
@@ -92,7 +93,7 @@ class testDirIntegrity(unittest.TestCase):
         os.mkdir(os.path.join(self.test_dir, self.cfg.mut_dir))
         os.mkdir(os.path.join(self.test_dir, self.cfg.comb_dir))
 
-        ret = sanity.dir_integrity(self.test_dir, self.cfg)
+        ret = sanity.dir_integrity(self.cfg)
 
         self.assertEqual(self.cfg.gen_dir, gen_abs)
         self.assertEqual(self.cfg.mut_dir, mut_abs)
@@ -110,7 +111,7 @@ class testDirIntegrity(unittest.TestCase):
         abs_path = os.path.join(self.test_dir, partial)
         os.mkdir(abs_path)
         os.chmod(abs_path, 0)
-        ret = sanity.dir_integrity(self.test_dir, self.cfg)
+        ret = sanity.dir_integrity(self.cfg)
         os.chmod(abs_path, 777)
 
         return ret
