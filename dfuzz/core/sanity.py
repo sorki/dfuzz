@@ -106,7 +106,8 @@ def value_validator(cfg_obj):
     '''
     Validate values in cfg object.
 
-    Returns False if there are any.
+    Returns False if there are any
+    invalid values.
     '''
 
     va_dict = {
