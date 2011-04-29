@@ -61,7 +61,7 @@ def main():
 
     if not sanity.value_validator(cfg):
         sys.exit(1)
-    if not sanity.dir_integrity(work_dir, cfg):
+    if not sanity.dir_integrity(cfg):
         sys.exit(1)
 
     if not (cfg.generation or cfg.mutation or cfg.combination):

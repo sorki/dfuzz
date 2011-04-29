@@ -15,6 +15,8 @@ class Config(object):
         self._filepath = os.path.join(path, filename)
         config.read(self._filepath)
 
+        setattr(self, 'work_dir', path)
+
         self._config = config
         for section in config.sections():
             for item in config.options(section):

@@ -2,12 +2,14 @@ import os
 import logging
 import subprocess
 
-def dir_integrity(work_dir, cfg_obj):
+def dir_integrity(cfg_obj):
     '''
     Ensure `work_dir` integrity, update `cfg_obj` paths
     to absolute paths if necessary, create log, incidents
     and tmp sub directories
     '''
+
+    work_dir = cfg_obj.work_dir
 
     sub_dirs = ['gen_dir', 'mut_dir', 'comb_dir', 
         'log_dir', 'incidents_dir', 'tmp_dir']
