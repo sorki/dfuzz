@@ -64,6 +64,8 @@ def main():
     if not sanity.dir_integrity(cfg):
         sys.exit(1)
 
+    sanity.check_no_fuzz_file(cfg)
+
     if not (cfg.generation or cfg.mutation or cfg.combination):
         logging.error('Nothing to do, set at least one mode '
             'in [global] section to 1 or create proper dirs')

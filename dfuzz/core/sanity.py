@@ -146,3 +146,32 @@ def value_validator(cfg_obj):
                 return False
 
     return True
+
+def check_no_fuzz_file(cfg_obj):
+    '''
+    Check the existence of `no_fuzz_file` if
+    `use_no_fuzz` enabled. Unset and give warning
+    if there is no such file.
+
+    If everything is fine, update its path to
+    the absolute path.
+    '''
+    if cfg_obj.use_no_fuzz:
+        path = os.path.join(cfg_obj.work_dir, cfg_obj.no_fuzz_file)
+        if not os.path.isfile(path):
+            logging.warning('No fuzz file: "%s"  not found,'
+                ' unsetting `use_no_fuzz` option',
+                cfg_obj.no_fuzz_file)
+
+            cfg_obj.use_no_fuzz = False
+            return
+
+        if not os.access(path, os.R_OK):
+            logging.warning('No fuzz file: "%s"  not readable,'
+                ' unsetting `use_no_fuzz` option',
+                cfg_obj.no_fuzz_file)
+
+            cfg_obj.use_no_fuzz = False
+            return
+
+        cfg_obj.no_fuzz_file = path
