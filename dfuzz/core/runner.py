@@ -3,6 +3,7 @@ import re
 import shutil
 import logging
 
+from dfuzz.core import utils
 from dfuzz.core import target
 from dfuzz.core import incident
 
@@ -91,7 +92,10 @@ class ModuleRunner(object):
 
                 logging.debug('[%s] Using fuzzed file "%s"', to_run,
                     os.path.basename(file))
-                # TODO (major): no_fuzz_file implementation
+
+                if self.cfg.use_no_fuzz:
+                    utils.handle_no_fuzz(file,
+                        self.cfg.no_fuzz_file, self.cfg.use_no_fuzz)
 
                 # TODO (minor): configurable classes
                 targ = target.Target(self.cfg.binary, self.cfg.args)
