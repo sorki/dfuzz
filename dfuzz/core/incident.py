@@ -2,7 +2,7 @@ import signal
 import logging
 
 class Incident(object):
-    def __init__(self):
+    def __init__(self, handler_cls):
         self.crash_signals = '''
         SIGILL
         SIGABRT
@@ -10,6 +10,9 @@ class Incident(object):
         SIGFPE
         SIGSEGV
         '''
+
+        self.handler_cls = handler_cls
+
 
     @property
     def crash_signals(self):

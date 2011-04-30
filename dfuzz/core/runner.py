@@ -5,6 +5,7 @@ import logging
 
 from dfuzz.core import utils
 from dfuzz.core import target
+from dfuzz.core import handler
 from dfuzz.core import incident
 
 class ModuleRunner(object):
@@ -99,20 +100,28 @@ class ModuleRunner(object):
 
                 targ_cls = utils.get_class_by_path(self.cfg.target)
                 if not targ_cls:
-                    logging.error('Target class "%s" not found,'
-                        ' skipping.', self.cfg.target)
-                    return
+                    logging.warning('Target class "%s" not found,'
+                        ' using default class.', self.cfg.target)
+                    targ_cls = target.Target
 
                 targ = targ_cls(self.cfg.binary, self.cfg.args)
                 targ.run(file)
 
                 inc_cls = utils.get_class_by_path(self.cfg.incident)
                 if not inc_cls:
-                    logging.error('Incident class "%s" not found,'
-                        ' skipping.', self.cfg.incident)
-                    return
+                    logging.warning('Incident class "%s" not found,'
+                        ' using default class.', self.cfg.incident)
+                    inc_cls = incident.Incident
 
-                inc = inc_cls()
+                hand_cls = utils.get_class_by_path(
+                    self.cfg.incident_handler)
+                if not hand_cls:
+                    logging.warning('Incident class "%s" not found,'
+                        ' using default class.',
+                        self.cfg.incident_handler)
+                    hand_cls = handler.IncidentHandler
+
+                inc = inc_cls(hand_cls)
                 inc.check(targ)
 
 
