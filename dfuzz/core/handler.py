@@ -4,7 +4,7 @@ Incident handler
 
 import logging
 
-class Handler(object):
+class IncidentHandler(object):
     def __init__(self, cfg, fuzzer):
         self.cfg = cfg
         self.fuzzer = fuzzer
