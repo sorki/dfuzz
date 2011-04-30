@@ -97,11 +97,22 @@ class ModuleRunner(object):
                     utils.handle_no_fuzz(file,
                         self.cfg.no_fuzz_file, self.cfg.use_no_fuzz)
 
-                # TODO (minor): configurable classes
-                targ = target.Target(self.cfg.binary, self.cfg.args)
+                targ_cls = utils.get_class_by_path(self.cfg.target)
+                if not targ_cls:
+                    logging.error('Target class "%s" not found,'
+                        ' skipping.', self.cfg.target)
+                    return
+
+                targ = targ_cls(self.cfg.binary, self.cfg.args)
                 targ.run(file)
 
-                inc = incident.Incident()
+                inc_cls = utils.get_class_by_path(self.cfg.incident)
+                if not inc_cls:
+                    logging.error('Incident class "%s" not found,'
+                        ' skipping.', self.cfg.incident)
+                    return
+
+                inc = inc_cls()
                 inc.check(targ)
 
 
