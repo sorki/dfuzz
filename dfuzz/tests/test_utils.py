@@ -1,6 +1,7 @@
 import unittest
 
 from dfuzz.core import utils
+from dfuzz.core import loader
 
 class testUtils(unittest.TestCase):
     def test_parse_args_empty(self):
@@ -20,5 +21,12 @@ class testUtils(unittest.TestCase):
             mapping={'str': 'nostr', 'A': 'X', 'B': 'Y', 'C': 'Z'})
         self.assertEqual(ret, 'nostr -option X -option Y Z')
 
+
+    def test_get_class(self):
+        fn = utils.get_class_by_path
+        self.assertFalse(fn('no.such.module'))
+        self.assertFalse(fn('sys.NoSuchClass'))
+        self.assertEqual(loader.ModuleLoader,
+            fn('dfuzz.core.loader.ModuleLoader'))
 if __name__ == "__main__":
     unittest.main()
