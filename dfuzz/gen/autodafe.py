@@ -28,7 +28,7 @@ class FuzzWrapper(wrapper.DfuzzWrapper):
 
         adc_file = os.path.join(self.output, 'autodafe_compiled.adc')
         try:
-            output = self.system('autodafe -v -f %s %s' % (self.output,
+            self.system('autodafe -v -f %s %s' % (self.output,
                 adc_file))
 
         except exceptions.SyscallException as e:
@@ -36,7 +36,6 @@ class FuzzWrapper(wrapper.DfuzzWrapper):
                 'Exception: %s', e)
             return None
 
-        output.split('\n')
         os.remove(adc_file)
 
         out_path = ''
