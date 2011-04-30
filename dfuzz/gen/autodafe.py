@@ -38,7 +38,6 @@ class FuzzWrapper(wrapper.DfuzzWrapper):
 
         os.remove(adc_file)
 
-        out_path = ''
         def generator():
             for root, dirs, files in os.walk(self.output):
                 for name in files:

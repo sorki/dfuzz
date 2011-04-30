@@ -53,8 +53,7 @@ class Incident(object):
             self._crash_signals = new
 
     def serious(self, retcode):
-        return (retcode in self.crash_signals
-            or -retcode in self.crash_signals)
+        return -retcode in self.crash_signals
 
     def check(self, target_obj, input_file_path):
         logging.debug(target_obj.code)

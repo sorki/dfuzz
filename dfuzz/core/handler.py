@@ -11,12 +11,8 @@ class IncidentHandler(object):
 
     def handle_failure(self, target_obj, input_file_path):
         logging.debug('Handling failure')
-        logging.debug('Command line', target_obj.cmd)
+        logging.debug('Command line: %s', target_obj.cmd)
         logging.debug('Target retcode: %d', target_obj.code)
         logging.debug('Target stdout: %s', target_obj.stdout)
         logging.debug('Target stderr: %s', target_obj.stderr)
-        logging.debug('Fuzzing method: %s', target_obj.stderr)
-        # create dir by cfg format
-        # copy input
-        # save stderr, stdout, method
-        pass
+        logging.debug('Fuzzing method: %s', self.fuzzer)

@@ -23,4 +23,4 @@ class Target(object):
             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         (self.stdout, self.stderr) = proc.communicate()
-        self.retcode = proc.poll()
+        self.code = proc.poll()
