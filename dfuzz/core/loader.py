@@ -54,21 +54,6 @@ class ModuleLoader(object):
             else:
                 return False
 
-        '''
-        try:
-            mod = __import__(str_mod, fromlist=['a'])
-        except ImportError:
-            logging.warning('No such module: "%s", skipping' % str_mod)
-            return False
-
-        if hasattr(mod, 'FuzzWrapper'):
-            cls = getattr(mod, 'FuzzWrapper')
-
-        logging.warning('Module "%s" has no "FuzzWrapper" class,'
-            ' skipping' % str_mod)
-        return False
-        '''
-
     def add_valid_modules(self, str_mods, prior):
         '''
         Add valid modules from `str_mods` to `self.high_priority`
