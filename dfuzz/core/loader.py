@@ -2,6 +2,8 @@ import re
 import random
 import logging
 
+from dfuzz.core import utils
+
 class ModuleLoader(object):
     def __init__(self):
         self.high_priority = []
@@ -42,6 +44,17 @@ class ModuleLoader(object):
         Returns class for valid classes, False otherwise.
         '''
 
+        cls = utils.get_class_by_path(str_mod + '.FuzzWrapper')
+        if not cls:
+            logging.warning('Unable to load wrapper, skipping')
+            return False
+        else:
+            if self.check_methods(cls, str_mod):
+                return cls
+            else:
+                return False
+
+        '''
         try:
             mod = __import__(str_mod, fromlist=['a'])
         except ImportError:
@@ -50,14 +63,11 @@ class ModuleLoader(object):
 
         if hasattr(mod, 'FuzzWrapper'):
             cls = getattr(mod, 'FuzzWrapper')
-            if self.check_methods(cls, str_mod):
-                return cls
-            else:
-                return False
 
         logging.warning('Module "%s" has no "FuzzWrapper" class,'
             ' skipping' % str_mod)
         return False
+        '''
 
     def add_valid_modules(self, str_mods, prior):
         '''

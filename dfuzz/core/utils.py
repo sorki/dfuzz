@@ -1,3 +1,5 @@
+import logging
+
 def parse_args(str_args, mapping={'FUZZED_FILE': '%(input)s'}):
     '''
     Replace keywords with python string formatting tokens.
@@ -25,3 +27,18 @@ def handle_no_fuzz(input_path, no_fuzz_path, mode):
         with open(input_path, 'w') as rew:
             rew.write(nf_contents)
             rew.write(orig_content)
+
+def get_class_by_path(str_path):
+    module_name, cls_name = str_path.rsplit('.', 1)
+    try:
+        mod = __import__(module_name, fromlist=['a'])
+    except ImportError:
+        logging.error('No such module: "%s"' % module_name)
+        return False
+
+    if hasattr(mod, cls_name):
+        cls = getattr(mod, cls_name)
+        return cls
+
+    logging.error('Module "%s" has no "%s" class.', cls_name)
+    return False
