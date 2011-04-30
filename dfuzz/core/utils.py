@@ -33,12 +33,13 @@ def get_class_by_path(str_path):
     try:
         mod = __import__(module_name, fromlist=['a'])
     except ImportError:
-        logging.error('No such module: "%s"' % module_name)
+        logging.error('No such module: "%s"', module_name)
         return False
 
     if hasattr(mod, cls_name):
         cls = getattr(mod, cls_name)
         return cls
 
-    logging.error('Module "%s" has no "%s" class.', cls_name)
+    logging.error('Module "%s" has no "%s" class.', module_name,
+        cls_name)
     return False
