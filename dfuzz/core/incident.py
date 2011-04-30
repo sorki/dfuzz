@@ -13,7 +13,7 @@ class Incident(object):
 
         self.cfg = cfg
         self.handler_cls = handler_cls
-        self.method = fuzzer
+        self.fuzzer = fuzzer
 
     @property
     def crash_signals(self):
@@ -53,9 +53,11 @@ class Incident(object):
             self._crash_signals = new
 
     def serious(self, retcode):
-        return retcode in self.crash_signals
+        return (retcode in self.crash_signals
+            or -retcode in self.crash_signals)
 
     def check(self, target_obj, input_file_path):
+        logging.debug(target_obj.code)
         if self.serious(target_obj.code):
             handler = self.handler_cls(self.cfg, self.fuzzer)
             handler.handle_failure(target_obj, input_file_path)
