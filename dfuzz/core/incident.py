@@ -2,7 +2,7 @@ import signal
 import logging
 
 class Incident(object):
-    def __init__(self, cfg, handler_cls):
+    def __init__(self, cfg, method, handler_cls):
         self.crash_signals = '''
         SIGILL
         SIGABRT
@@ -13,7 +13,7 @@ class Incident(object):
 
         self.cfg = cfg
         self.handler_cls = handler_cls
-
+        self.method = method
 
     @property
     def crash_signals(self):
@@ -55,7 +55,7 @@ class Incident(object):
     def serious(self, retcode):
         return retcode in self.crash_signals
 
-    def check(self, target_obj):
+    def check(self, target_obj, input_file_path):
         if self.serious(target_obj.code):
-            handler = self.handler_cls()
-            handler.handle_failure(target_obj)
+            handler = self.handler_cls(self.cfg, self.method)
+            handler.handle_failure(target_obj, input_file_path)

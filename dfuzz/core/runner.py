@@ -121,8 +121,8 @@ class ModuleRunner(object):
                         self.cfg.incident_handler)
                     hand_cls = handler.IncidentHandler
 
-                inc = inc_cls(self.cfg, hand_cls)
-                inc.check(targ)
+                inc = inc_cls(self.cfg, str(to_run), hand_cls)
+                inc.check(targ, input_file_path)
 
 
         if inputs == []:

@@ -13,12 +13,12 @@ class Target(object):
         self.code = 0
 
     def run(self, input_file):
-        cmd = '%s %s' % (self.target,
+        self.cmd = '%s %s' % (self.target,
             self.args % {'input': input_file})
-        logging.debug('Running %s', cmd)
+        logging.debug('Running %s', self.cmd)
 
         # TODO (major): timeouts
-        proc = subprocess.Popen(shlex.split(cmd),
+        proc = subprocess.Popen(shlex.split(self.cmd),
             env={'LIBC_FATAL_STDERR_': '1'},
             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
