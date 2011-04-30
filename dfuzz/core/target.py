@@ -3,9 +3,10 @@ import logging
 import subprocess
 
 class Target(object):
-    def __init__(self, target, args=[]):
-        self.target = target
-        self.args = args
+    def __init__(self, cfg):
+        self.cfg = cfg
+        self.target = self.cfg.binary
+        self.args = self.cfg.args
 
         self.stderr = ''
         self.stdout = ''

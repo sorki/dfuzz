@@ -104,7 +104,7 @@ class ModuleRunner(object):
                         ' using default class.', self.cfg.target)
                     targ_cls = target.Target
 
-                targ = targ_cls(self.cfg.binary, self.cfg.args)
+                targ = targ_cls(self.cfg)
                 targ.run(file)
 
                 inc_cls = utils.get_class_by_path(self.cfg.incident)
