@@ -121,7 +121,7 @@ class ModuleRunner(object):
                         self.cfg.incident_handler)
                     hand_cls = handler.IncidentHandler
 
-                inc = inc_cls(hand_cls)
+                inc = inc_cls(self.cfg, hand_cls)
                 inc.check(targ)
 
 

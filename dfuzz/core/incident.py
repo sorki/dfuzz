@@ -2,7 +2,7 @@ import signal
 import logging
 
 class Incident(object):
-    def __init__(self, handler_cls):
+    def __init__(self, cfg, handler_cls):
         self.crash_signals = '''
         SIGILL
         SIGABRT
@@ -11,6 +11,7 @@ class Incident(object):
         SIGSEGV
         '''
 
+        self.cfg = cfg
         self.handler_cls = handler_cls
 
 
@@ -56,4 +57,5 @@ class Incident(object):
 
     def check(self, target_obj):
         if self.serious(target_obj.code):
-            logging.error('Failure')
+            handler = self.handler_cls()
+            handler.handle_failure(target_obj)
