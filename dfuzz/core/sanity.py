@@ -124,9 +124,6 @@ def value_validator(cfg_obj):
         'combination_priority' : ['low', 'high'],
     }
 
-    # TODO (normal): validate incident_format
-
-
     for k,v in va_dict.iteritems():
         val = getattr(cfg_obj, k)
         if type(v) == list:
@@ -144,6 +141,13 @@ def value_validator(cfg_obj):
                     ' has wrong type. Expected type: "%s"',
                     k, v)
                 return False
+
+    if not ('U' in cfg_obj.incident_format or
+        'I' in cfg_obj.incident_format):
+        logging.error('Invalid incident format, please use at least'
+            ' one of "I" (incident counter) or "U" (uuid) in it')
+        return False
+
 
     return True
 
