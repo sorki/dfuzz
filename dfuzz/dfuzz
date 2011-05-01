@@ -3,6 +3,7 @@ import os
 import sys
 import logging
 import optparse
+import threading
 
 
 from dfuzz.core import conf
@@ -81,7 +82,9 @@ def main():
         sys.exit(1)
 
     cfg.args = utils.parse_args(cfg.args)
-
+    # init state variables
+    cfg.num_incidents = 0
+    cfg.handler_semaphore = threading.Semaphore()
 
     mloader = loader.ModuleLoader()
 
