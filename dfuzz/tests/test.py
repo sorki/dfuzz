@@ -2,6 +2,7 @@
 import logging
 import unittest
 
+import test_conf
 import test_utils
 import test_sanity
 import test_loader
@@ -16,6 +17,7 @@ def get_suite():
         test_sanity.testDirIntegrity,
         test_sanity.testValidators,
         test_loader.testLoader,
+        test_conf.testConf,
         test_utils.testUtils,
         test_incident.testIncident]
 

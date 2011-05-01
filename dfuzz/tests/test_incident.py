@@ -2,10 +2,17 @@
 import unittest
 
 from dfuzz.core import incident
+from dfuzz.tests.dummy import incident_required
 
 class testIncident(unittest.TestCase):
     def setUp(self):
-        self.i = incident.Incident()
+        self.dc = incident_required.Config()
+        self.dt = incident_required.TargetObj()
+        self.dh_class = incident_required.Handler
+        self.fuzzer = 'test'
+
+        self.i = incident.Incident(self.dc, self.fuzzer,
+            self.dh_class)
 
     def test_defaults(self):
         '''
@@ -37,11 +44,11 @@ class testIncident(unittest.TestCase):
         sigs = range(10)
         self.i.crash_signals = sigs
         for s in sigs:
-            self.assertTrue(self.i.serious(s))
+            self.assertTrue(self.i.serious(-s))
 
         nosigs = range(15, 20)
         for ns in nosigs:
-            self.assertFalse(self.i.serious(ns))
+            self.assertFalse(self.i.serious(-ns))
 
 if __name__ == "__main__":
     unittest.main()
