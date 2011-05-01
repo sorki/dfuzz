@@ -3,6 +3,7 @@ Incident handler
 '''
 
 import os
+import shutil
 import logging
 
 from dfuzz.core import utils
@@ -35,9 +36,25 @@ class ConsoleIncidentHandler(CoreIncidentHandler):
         log_fn('Target stderr: %s'  % target_obj.stderr)
         log_fn('Fuzzing method: %s' % self.fuzzer)
 
-class FileIncidentHandler(object):
+class FileIncidentHandler(CoreIncidentHandler):
     def handle_failure(self, target_obj, input_file_path):
-        super(ConsoleIncidentHandler, self).handle_failure(target_obj,
+        super(FileIncidentHandler, self).handle_failure(target_obj,
             input_file_path)
 
-        #os.mkdir(utils.parse_incident_fmt(self.cfg))
+        out_dir_path = self.cfg.incidents_dir
+        inc_dir_name = utils.parse_incident_fmt(self.cfg)
+        work_dir = os.path.join(out_dir_path, inc_dir_name)
+        os.mkdir(work_dir)
+
+        shutil.copyfile(input_file_path, os.path.join(work_dir,
+            self.cfg.incident_input))
+
+        with open(os.path.join(work_dir,
+            self.cfg.incident_stdout), 'w') as f:
+            f.write(target_obj.stdout)
+
+        with open(os.path.join(work_dir,
+            self.cfg.incident_stderr), 'w') as f:
+            f.write(target_obj.stderr)
+
+        #TODO (major): info file
