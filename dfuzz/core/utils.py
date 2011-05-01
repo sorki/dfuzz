@@ -1,3 +1,4 @@
+import uuid
 import logging
 
 def parse_args(str_args, mapping={'FUZZED_FILE': '%(input)s'}):
@@ -43,3 +44,12 @@ def get_class_by_path(str_path):
     logging.error('Module "%s" has no "%s" class.', module_name,
         cls_name)
     return False
+
+
+def parse_incident_fmt(cfg):
+    fmt = cfg.incident_format
+    iid = str(cfg.num_incidents)
+    uid = str(uuid.uuid4())
+    fmt = fmt.replace('U', uid)
+    fmt = fmt.replace('I', iid)
+    return fmt
