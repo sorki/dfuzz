@@ -50,5 +50,9 @@ class testIncident(unittest.TestCase):
         for ns in nosigs:
             self.assertFalse(self.i.serious(-ns))
 
+    def test_check(self):
+        p = '/EL_PATH'
+        self.i.check(self.dt, p)
+
 if __name__ == "__main__":
     unittest.main()

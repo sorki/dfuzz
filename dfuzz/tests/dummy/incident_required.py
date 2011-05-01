@@ -2,7 +2,7 @@ class Config(object):
     pass
 
 class TargetObj(object):
-    pass
+    code = -11
 
 class Handler(object):
     def __init__(self, cfg, fuzzer):
