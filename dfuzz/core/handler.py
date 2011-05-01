@@ -57,4 +57,14 @@ class FileIncidentHandler(CoreIncidentHandler):
             self.cfg.incident_stderr), 'w') as f:
             f.write(target_obj.stderr)
 
-        #TODO (major): info file
+        with open(os.path.join(work_dir,
+            self.cfg.incident_info), 'w') as f:
+            f.write(self.get_info_string(target_obj))
+
+    def get_info_string(self, to):
+        return (
+            'Command line: "%s" \n\n'
+            'Target return code: "%d" \n\n'
+            'Fuzzing method: "%s"' %
+            (to.cmd, to.code, self.fuzzer))
+
