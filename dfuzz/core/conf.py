@@ -34,5 +34,9 @@ class Config(object):
 
     def as_dict(self):
         ''' This won't reflect any updates '''
-        # TODO (minor): make it reflect the updates
+        new_dict = {}
+        for k, v in self.__dict.iteritems():
+            new_dict[k] = getattr(self, k)
+
+        self.__dict = new_dict
         return self.__dict
