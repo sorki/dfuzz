@@ -49,6 +49,9 @@ class FileIncidentHandler(CoreIncidentHandler):
         shutil.copyfile(input_file_path, os.path.join(work_dir,
             self.cfg.incident_input))
 
+        self.mod_cmd = target_obj.cmd.replace(input_file_path,
+            os.path.join(work_dir, self.cfg.incident_input))
+
         with open(os.path.join(work_dir,
             self.cfg.incident_stdout), 'w') as f:
             f.write(target_obj.stdout)
@@ -64,7 +67,8 @@ class FileIncidentHandler(CoreIncidentHandler):
     def get_info_string(self, to):
         return (
             'Command line: "%s" \n\n'
+            'Modified command line: "%s" \n\n'
             'Target return code: "%d" \n\n'
-            'Fuzzing method: "%s"' %
-            (to.cmd, to.code, self.fuzzer))
+            'Fuzzing method: "%s \n"' %
+            (to.cmd, self.mod_cmd, to.code, self.fuzzer))
 
