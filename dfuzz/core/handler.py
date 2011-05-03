@@ -77,7 +77,7 @@ class FileIncidentHandler(CoreIncidentHandler):
             'Command line: "%s" \n\n'
             'Modified command line: "%s" \n\n'
             'Target return code: "%d" \n\n'
-            'Fuzzing method: "%s \n"' %
+            'Fuzzing method: "%s"\n' %
             (to.cmd, self.mod_cmd, to.code, self.fuzzer))
 
     def get_reproduce_string(self):
