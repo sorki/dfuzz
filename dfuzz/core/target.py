@@ -27,7 +27,7 @@ class Target(object):
         (self.stdout, self.stderr) = self._proc.communicate()
         self.code = self._proc.poll()
 
-class TimedTarget(object):
+class TimedTarget(Target):
     def alarm_handler(self):
         self._proc.kill()
         self.code = incident.TIMEOUT
