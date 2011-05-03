@@ -56,7 +56,6 @@ class Incident(object):
         return -retcode in self.crash_signals
 
     def check(self, target_obj, input_file_path):
-        logging.debug(target_obj.code)
         if self.serious(target_obj.code):
             handler = self.handler_cls(self.cfg, self.fuzzer)
             handler.handle_failure(target_obj, input_file_path)

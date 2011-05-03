@@ -42,6 +42,8 @@ class FileIncidentHandler(CoreIncidentHandler):
         super(FileIncidentHandler, self).handle_failure(target_obj,
             input_file_path)
 
+        self.to = target_obj
+
         out_dir_path = self.cfg.incidents_dir
         inc_dir_name = utils.parse_incident_fmt(self.cfg)
         work_dir = os.path.join(out_dir_path, inc_dir_name)
@@ -72,13 +74,16 @@ class FileIncidentHandler(CoreIncidentHandler):
         os.chmod(os.path.join(work_dir,
         self.cfg.incident_reproduce), 0755)
 
-    def get_info_string(self, to):
+    def get_info_string(self):
         return (
             'Command line: "%s" \n\n'
             'Modified command line: "%s" \n\n'
             'Target return code: "%d" \n\n'
             'Fuzzing method: "%s"\n' %
-            (to.cmd, self.mod_cmd, to.code, self.fuzzer))
+            (self.to.cmd, self.mod_cmd, self.to.code, self.fuzzer))
 
     def get_reproduce_string(self):
-        return '#!/bin/sh\n%s\n' % self.mod_cmd
+        notice = ''
+        if self.to.code == -9: # timeout
+            notice = 'echo "NOTICE: Reproducing timeout"\n'
+        return '#!/bin/sh\n%s%s\n' % (notice, self.mod_cmd)
