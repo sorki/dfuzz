@@ -3,8 +3,6 @@ import signal
 import logging
 import subprocess
 
-from dfuzz.core import incident
-
 class Target(object):
     def __init__(self, cfg):
         self.cfg = cfg
@@ -30,7 +28,6 @@ class Target(object):
 class TimedTarget(Target):
     def alarm_handler(self, signum, frame):
         self._proc.kill()
-        self.code = incident.TIMEOUT
 
     def run(self, input_file):
         old_handler = signal.signal(signal.SIGALRM, self.alarm_handler)

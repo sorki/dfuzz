@@ -1,8 +1,6 @@
 import signal
 import logging
 
-TIMEOUT = 280
-
 class Incident(object):
     def __init__(self, cfg, fuzzer, handler_cls):
         self.crash_signals = '''
@@ -66,4 +64,4 @@ class Incident(object):
 class TimeIncident(Incident):
     def __init__(self, *args, **kwargs):
         super(TimeIncident, self).__init__(*args, **kwargs)
-        self.crash_signals.append(TIMEOUT)
+        self.crash_signals.append(signal.SIGKILL)
