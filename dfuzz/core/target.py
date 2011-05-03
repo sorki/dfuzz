@@ -1,6 +1,9 @@
 import shlex
+import signal
 import logging
 import subprocess
+
+from dfuzz.core import incident
 
 class Target(object):
     def __init__(self, cfg):
@@ -17,10 +20,21 @@ class Target(object):
             self.args % {'input': input_file})
         logging.debug('Running %s', self.cmd)
 
-        # TODO (major): timeouts
-        proc = subprocess.Popen(shlex.split(self.cmd),
+        self._proc = subprocess.Popen(shlex.split(self.cmd),
             env={'LIBC_FATAL_STDERR_': '1'},
             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-        (self.stdout, self.stderr) = proc.communicate()
-        self.code = proc.poll()
+        (self.stdout, self.stderr) = self._proc.communicate()
+        self.code = self._proc.poll()
+
+class TimedTarget(object):
+    def alarm_handler(self):
+        self._proc.kill()
+        self.code = incident.TIMEOUT
+
+    def run(self, input_file):
+        old_handler = signal.signal(signal.SIGALRM, self.alarm_handler)
+        signal.alarm(self.cfg.timeout)
+        super(TimedTarget, self).run(input_file)
+        signal.alarm(0)
+        signal(signal.SIGALRM, old_handler)
