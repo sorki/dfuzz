@@ -34,7 +34,7 @@ class TimedTarget(Target):
 
     def run(self, input_file):
         old_handler = signal.signal(signal.SIGALRM, self.alarm_handler)
-        signal.alarm(self.cfg.timeout)
+        signal.alarm(int(self.cfg.timeout))
         super(TimedTarget, self).run(input_file)
         signal.alarm(0)
-        signal(signal.SIGALRM, old_handler)
+        signal.signal(signal.SIGALRM, old_handler)
