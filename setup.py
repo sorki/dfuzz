@@ -8,7 +8,7 @@ from distutils.command.install import INSTALL_SCHEMES
 
 
 NAME = 'dfuzz'
-VERSION = '0.2'
+VERSION = '0.3'
 
 srcdir = 'dfuzz'
 
