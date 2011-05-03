@@ -68,7 +68,6 @@ class FileIncidentHandler(CoreIncidentHandler):
             self.cfg.incident_reproduce), 'w') as f:
             f.write(self.get_reproduce_string())
 
-        # TODO (major): fix mode
         os.chmod(os.path.join(work_dir,
         self.cfg.incident_reproduce), 0755)
 
