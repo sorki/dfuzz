@@ -64,6 +64,14 @@ class FileIncidentHandler(CoreIncidentHandler):
             self.cfg.incident_info), 'w') as f:
             f.write(self.get_info_string(target_obj))
 
+        with open(os.path.join(work_dir,
+            self.cfg.incident_reproduce), 'w') as f:
+            f.write(self.get_reproduce_string())
+
+        # TODO (major): fix mode
+        os.chmod(os.path.join(work_dir,
+        self.cfg.incident_reproduce), 0755)
+
     def get_info_string(self, to):
         return (
             'Command line: "%s" \n\n'
@@ -72,3 +80,5 @@ class FileIncidentHandler(CoreIncidentHandler):
             'Fuzzing method: "%s \n"' %
             (to.cmd, self.mod_cmd, to.code, self.fuzzer))
 
+    def get_reproduce_string(self):
+        return '#!/bin/sh\n%s\n' % self.mod_cmd
