@@ -65,7 +65,7 @@ class FileIncidentHandler(CoreIncidentHandler):
 
         with open(os.path.join(work_dir,
             self.cfg.incident_info), 'w') as f:
-            f.write(self.get_info_string(target_obj))
+            f.write(self.get_info_string())
 
         with open(os.path.join(work_dir,
             self.cfg.incident_reproduce), 'w') as f:
