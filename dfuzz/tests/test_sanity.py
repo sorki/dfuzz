@@ -49,9 +49,9 @@ class testDirIntegrity(unittest.TestCase):
         Test whether integrity fails if work_dir
         is not writable.
         '''
-        os.chmod(self.test_dir, 555)
+        os.chmod(self.test_dir, 0555)
         ret = sanity.dir_integrity(self.cfg)
-        os.chmod(self.test_dir, 777)
+        os.chmod(self.test_dir, 0777)
         self.assertEqual(ret, False)
 
     def test_dir_integrity_disable(self):
@@ -110,9 +110,9 @@ class testDirIntegrity(unittest.TestCase):
         '''
         abs_path = os.path.join(self.test_dir, partial)
         os.mkdir(abs_path)
-        os.chmod(abs_path, 0)
+        os.chmod(abs_path, 0000)
         ret = sanity.dir_integrity(self.cfg)
-        os.chmod(abs_path, 777)
+        os.chmod(abs_path, 0777)
 
         return ret
 
