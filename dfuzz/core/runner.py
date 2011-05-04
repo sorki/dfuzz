@@ -20,22 +20,38 @@ class ModuleRunner(object):
         Spawn threads according to configuration.
         '''
 
-        # TODO (normal): implement thread num. limit
+        limit = int(self.cfg.threads)
+        current = 0
         high = []
         for cls in self.high_priority:
             mt = ModuleThread(self.cfg, cls)
             logging.debug("Running thread for %s", cls)
             mt.start()
             high.append(mt)
+            current += 1
+            if current == limit:
+                wait_for = high.pop()
+                wait_for.join()
+                current -= 1
 
         # wait for all high priority threads to stop
         for mt in high:
             mt.join()
 
+        current = 0
+        low = []
         for cls in self.low_priority:
             mt = ModuleThread(self.cfg, cls)
             logging.debug("Running thread for %s", cls)
             mt.start()
+            current += 1
+            if current == limit:
+                wait_for = low.pop()
+                wait_for.join()
+                current -= 1
+
+        for mt in low:
+            mt.join()
 
 class ModuleThread(threading.Thread):
     def __init__(self, cfg, cls_tuple):
