@@ -2,6 +2,7 @@ import os
 import re
 import shutil
 import logging
+import threading
 
 from dfuzz.core import utils
 from dfuzz.core import target
@@ -19,16 +20,28 @@ class ModuleRunner(object):
         Spawn threads according to configuration.
         '''
 
-        # spawn threads each running one module
-        # TODO: thread priority
+        # TODO (normal): implement thread num. limit
+        high = []
         for cls in self.high_priority:
-            self.run_single(cls)
+            mt = ModuleThread(self.cfg, cls)
+            logging.debug("running thread for %s", cls)
+            mt.start()
+            high.append(mt)
 
+        # wait for all high priority threads to stop
+        for mt in high:
+            mt.join()
 
         for cls in self.low_priority:
-            self.run_single(cls)
-        # TODO: spawn low priority
+            mt = ModuleThread(self.cfg, cls)
+            logging.debug("running thread for %s", cls)
+            mt.start()
 
+class ModuleThread(threading.Thread):
+    def __init__(self, cfg, cls_tuple):
+        self.cfg = cfg
+        self.cls_tuple = cls_tuple
+        threading.Thread.__init__ ( self )
     def get_inputs(self, method):
         '''
         Get input files list from input directory
@@ -53,7 +66,7 @@ class ModuleRunner(object):
 
         return out
 
-    def run_single(self, cls_tuple):
+    def run(self):
         '''
         Set up and run single instance of the class.
         This takes the input files, runs each of them through
@@ -61,7 +74,7 @@ class ModuleRunner(object):
         with fuzzed input (via TargetRunner class).
         '''
 
-        cls, params = cls_tuple
+        cls, params = self.cls_tuple
         logging.debug('Instantiating class %s', cls)
         to_run = cls()
         tmp_dir_path = os.path.join(self.cfg.tmp_dir, str(to_run))
