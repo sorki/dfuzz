@@ -1,6 +1,6 @@
 import shlex
-import signal
 import logging
+import threading
 import subprocess
 
 class Target(object):
@@ -26,12 +26,14 @@ class Target(object):
         self.code = self._proc.poll()
 
 class TimedTarget(Target):
-    def alarm_handler(self, signum, frame):
+    def alarm_handler(self):
         self._proc.kill()
 
     def run(self, input_file):
-        old_handler = signal.signal(signal.SIGALRM, self.alarm_handler)
-        signal.alarm(int(self.cfg.timeout))
+        timer = threading.Timer(int(self.cfg.timeout),
+            self.alarm_handler)
+        timer.start()
+
         super(TimedTarget, self).run(input_file)
-        signal.alarm(0)
-        signal.signal(signal.SIGALRM, old_handler)
+
+        timer.cancel()
