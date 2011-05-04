@@ -24,7 +24,7 @@ class ModuleRunner(object):
         high = []
         for cls in self.high_priority:
             mt = ModuleThread(self.cfg, cls)
-            logging.debug("running thread for %s", cls)
+            logging.debug("Running thread for %s", cls)
             mt.start()
             high.append(mt)
 
@@ -34,7 +34,7 @@ class ModuleRunner(object):
 
         for cls in self.low_priority:
             mt = ModuleThread(self.cfg, cls)
-            logging.debug("running thread for %s", cls)
+            logging.debug("Running thread for %s", cls)
             mt.start()
 
 class ModuleThread(threading.Thread):
