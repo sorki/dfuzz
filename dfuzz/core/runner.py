@@ -21,37 +21,24 @@ class ModuleRunner(object):
         '''
 
         limit = int(self.cfg.threads)
-        current = 0
-        high = []
-        for cls in self.high_priority:
-            mt = ModuleThread(self.cfg, cls)
-            logging.debug("Running thread for %s", cls)
-            mt.start()
-            high.append(mt)
-            current += 1
-            if current == limit:
-                wait_for = high.pop()
-                wait_for.join()
-                current -= 1
 
-        # wait for all high priority threads to stop
-        for mt in high:
-            mt.join()
+        for mods in [self.high_priority, self.low_priority]:
+            current = 0
+            running = []
+            for cls in mods:
+                mt = ModuleThread(self.cfg, cls)
+                logging.debug("Running thread for %s", cls)
+                mt.start()
+                running.append(mt)
+                current += 1
+                if current == limit:
+                    wait_for = running.pop()
+                    wait_for.join()
+                    current -= 1
 
-        current = 0
-        low = []
-        for cls in self.low_priority:
-            mt = ModuleThread(self.cfg, cls)
-            logging.debug("Running thread for %s", cls)
-            mt.start()
-            current += 1
-            if current == limit:
-                wait_for = low.pop()
-                wait_for.join()
-                current -= 1
-
-        for mt in low:
-            mt.join()
+            # wait for all high priority threads to stop
+            for mt in running:
+                mt.join()
 
 class ModuleThread(threading.Thread):
     def __init__(self, cfg, cls_tuple):
