@@ -8,8 +8,6 @@ import logging
 
 from dfuzz.core import utils
 
-# TODO (normal): human readable error code
-
 class CoreIncidentHandler(object):
     def __init__(self, cfg, fuzzer):
         self.cfg = cfg
