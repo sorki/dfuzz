@@ -19,14 +19,16 @@ class CoreIncidentHandler(object):
     def __del__(self):
         self.cfg.handler_semaphore.release()
 
-    def handle_failure(self, target_obj, input_file_path):
+    def handle_failure(self, target_obj, input_file_path, reason):
         self.cfg.num_incidents += 1
         logging.warning('[%s] Handling incident', self.fuzzer)
+        if reason:
+            logging.warning('[%s] Reason: %s', self.fuzzer, reason)
 
 class ConsoleIncidentHandler(CoreIncidentHandler):
-    def handle_failure(self, target_obj, input_file_path):
+    def handle_failure(self, target_obj, input_file_path, reason):
         super(ConsoleIncidentHandler, self).handle_failure(target_obj,
-            input_file_path)
+            input_file_path, reason)
 
         def log_fn(str):
             logging.warning('[%s] %s' % (self.fuzzer, str))
@@ -38,11 +40,12 @@ class ConsoleIncidentHandler(CoreIncidentHandler):
         log_fn('Fuzzing method: %s' % self.fuzzer)
 
 class FileIncidentHandler(CoreIncidentHandler):
-    def handle_failure(self, target_obj, input_file_path):
+    def handle_failure(self, target_obj, input_file_path, reason):
         super(FileIncidentHandler, self).handle_failure(target_obj,
-            input_file_path)
+            input_file_path, reason)
 
         self.to = target_obj
+        self.reason = reason
 
         out_dir_path = self.cfg.incidents_dir
         inc_dir_name = utils.parse_incident_fmt(self.cfg)
@@ -75,12 +78,17 @@ class FileIncidentHandler(CoreIncidentHandler):
         self.cfg.incident_reproduce), 0755)
 
     def get_info_string(self):
+        reason = ''
+        if self.reason:
+            reason = 'Incident reason: %s' % self.reason
+
         return (
-            'Command line: "%s" \n\n'
-            'Modified command line: "%s" \n\n'
-            'Target return code: "%d" \n\n'
-            'Fuzzing method: "%s"\n' %
-            (self.to.cmd, self.mod_cmd, self.to.code, self.fuzzer))
+            'Command line: "%s" \n'
+            'Modified command line: "%s" \n'
+            'Target return code: "%d" \n'
+            'Fuzzing method: "%s"\n%s' %
+            (self.to.cmd, self.mod_cmd, self.to.code,
+                self.fuzzer, reason))
 
     def get_reproduce_string(self):
         notice = ''
