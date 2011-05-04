@@ -9,6 +9,7 @@ class Handler(object):
         self.cfg = cfg
         self.fuzzer = fuzzer
 
-    def handle_failure(self, target_obj, input_file_path):
+    def handle_failure(self, target_obj, input_file_path, reason):
         self.target_obj = target_obj
         self.input_file_path = input_file_path
+        self.reason = reason
