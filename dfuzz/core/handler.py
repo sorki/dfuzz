@@ -19,9 +19,9 @@ class CoreIncidentHandler(object):
 
     def handle_failure(self, target_obj, input_file_path, reason):
         self.cfg.num_incidents += 1
-        logging.warning('[%s] Handling incident', self.fuzzer)
+        logging.info('[%s] Handling incident', self.fuzzer)
         if reason:
-            logging.warning('[%s] Reason: %s', self.fuzzer, reason)
+            logging.info('[%s] Reason: %s', self.fuzzer, reason)
 
 class ConsoleIncidentHandler(CoreIncidentHandler):
     def handle_failure(self, target_obj, input_file_path, reason):
