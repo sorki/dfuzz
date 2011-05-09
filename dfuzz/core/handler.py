@@ -48,6 +48,13 @@ class FileIncidentHandler(CoreIncidentHandler):
         out_dir_path = self.cfg.incidents_dir
         inc_dir_name = utils.parse_incident_fmt(self.cfg)
         work_dir = os.path.join(out_dir_path, inc_dir_name)
+
+        if os.path.isdir(work_dir):
+            logging.error('Incident "%s" already exists, current'
+                ' incident won\'t be recorded. Remove old incidents'
+                ' first.', inc_dir_name)
+            return
+
         os.mkdir(work_dir)
 
         shutil.copyfile(input_file_path, os.path.join(work_dir,
