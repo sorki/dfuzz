@@ -109,5 +109,9 @@ def main():
 
     mrunner.run()
 
+    if cfg.num_incidents > 0:
+        logging.warning('%d incident(s) recorded', cfg.num_incidents)
+        sys.exit(1)
+
 if __name__ == "__main__":
     main()
