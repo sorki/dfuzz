@@ -81,9 +81,9 @@ class FileIncidentHandler(CoreIncidentHandler):
             reason = 'Incident reason: %s' % self.reason
 
         return (
-            'Command line: "%s" \n'
-            'Modified command line: "%s" \n'
-            'Target return code: "%d" \n'
+            'Command line: "%s"\n'
+            'Modified command line: "%s"\n'
+            'Target return code: "%d"\n'
             'Fuzzing method: "%s"\n%s' %
             (self.to.cmd, self.mod_cmd, self.to.code,
                 self.fuzzer, reason))
