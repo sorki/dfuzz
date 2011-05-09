@@ -79,4 +79,5 @@ class Incident(object):
 class TimeIncident(Incident):
     def __init__(self, *args, **kwargs):
         super(TimeIncident, self).__init__(*args, **kwargs)
-        self.crash_signals.append(signal.SIGKILL)
+        if self.cfg.timeout_as_incident:
+            self.crash_signals.append(signal.SIGKILL)
