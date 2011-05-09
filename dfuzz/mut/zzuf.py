@@ -21,7 +21,7 @@ class FuzzWrapper(wrapper.DfuzzWrapper):
         ratio_end = .004
         seed_max = 10000
 
-        if len(self.zzuf.params) > 0:
+        if len(self.zzuf_params) > 0:
             try:
                 if len(self.zzuf_params) == 2:
                     ratio_start = float(self.zzuf_params[0])
