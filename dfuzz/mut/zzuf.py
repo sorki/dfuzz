@@ -17,26 +17,27 @@ class FuzzWrapper(wrapper.DfuzzWrapper):
         self.zzuf_params = params
 
         # defaults
-        ratio_start = .004
-        ratio_end = .01
+        ratio_start = .001
+        ratio_end = .004
         seed_max = 10000
 
-        try:
-            if len(self.zzuf_params) == 2:
-                ratio_start = float(self.zzuf_params[0])
-                ratio_end = ratio_start + 0.001
-                seed_max = self.zzuf_params[1]
-            elif len(self.zzuf_params) == 3:
-                ratio_start = float(self.zzuf_params[0])
-                ratio_end = float(self.zzuf_params[1])
-                seed_max = self.zzuf_params[2]
-            else:
-                logging.warning('Wrong %s parameter format,'
-                    ' using defaults.', self)
-        except ValueError as e:
-            logging.warning('Unable to parse attributes'
-                ' passed to %s. Using default values. '
-                ' Check your config. Exception: %s', self, e)
+        if len(self.zzuf.params) > 0:
+            try:
+                if len(self.zzuf_params) == 2:
+                    ratio_start = float(self.zzuf_params[0])
+                    ratio_end = ratio_start + 0.001
+                    seed_max = self.zzuf_params[1]
+                elif len(self.zzuf_params) == 3:
+                    ratio_start = float(self.zzuf_params[0])
+                    ratio_end = float(self.zzuf_params[1])
+                    seed_max = self.zzuf_params[2]
+                else:
+                    logging.warning('Wrong %s parameter format,'
+                        ' using defaults.', self)
+            except ValueError as e:
+                logging.warning('Unable to parse attributes'
+                    ' passed to %s. Using default values. '
+                    ' Check your config. Exception: %s', self, e)
 
         self.ratio = (ratio_start, ratio_end)
         self.seed_range = (0, int(seed_max))
