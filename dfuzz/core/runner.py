@@ -44,7 +44,9 @@ class ModuleThread(threading.Thread):
     def __init__(self, cfg, cls_tuple):
         self.cfg = cfg
         self.cls_tuple = cls_tuple
-        threading.Thread.__init__ ( self )
+        threading.Thread.__init__(self)
+        self.samples = 0
+
     def get_inputs(self, method):
         '''
         Get input files list from input directory
@@ -140,6 +142,10 @@ class ModuleThread(threading.Thread):
                 inc = inc_cls(self.cfg, str(to_run), hand_cls)
                 inc.check(targ, file)
 
+                if self.samples < self.cfg.num_samples:
+                    utils.save_sample(file, targ,
+                        self.cfg.samples_dir)
+                    self.samples += 1
 
         if inputs == []:
             logging.warning('No input files for method "%s" found',

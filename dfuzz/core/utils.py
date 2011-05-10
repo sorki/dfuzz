@@ -1,4 +1,6 @@
+import os
 import uuid
+import shutil
 import logging
 
 def parse_args(str_args, mapping={'FUZZED_FILE': '%(input)s'}):
@@ -45,7 +47,6 @@ def get_class_by_path(str_path):
         cls_name)
     return False
 
-
 def parse_incident_fmt(cfg):
     fmt = cfg.incident_format
     iid = str(cfg.num_incidents)
@@ -53,3 +54,17 @@ def parse_incident_fmt(cfg):
     fmt = fmt.replace('U', uid)
     fmt = fmt.replace('I', iid)
     return fmt
+
+def save_sample(file_path, target_obj, target_dir):
+    uid = str(uuid.uuid4())
+    target = os.path.join(target_dir, uid)
+    run_script = os.path.join(target_dir, 'run_'+uid)
+
+    shutil.copyfile(file_path, target)
+
+    mod_cmd = target_obj.cmd.replace(file_path, target)
+
+    with open(run_script, 'w') as f:
+        f.write('#!/bin/sh\n%s\n' % mod_cmd)
+
+    os.chmod(run_script, 0755)
