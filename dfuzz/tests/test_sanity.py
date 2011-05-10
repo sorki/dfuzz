@@ -88,6 +88,7 @@ class testDirIntegrity(unittest.TestCase):
         tmp_abs = os.path.join(self.test_dir, self.cfg.tmp_dir)
         log_abs = os.path.join(self.test_dir, self.cfg.log_dir)
         inc_abs = os.path.join(self.test_dir, self.cfg.incidents_dir)
+        sam_abs = os.path.join(self.test_dir, self.cfg.samples_dir)
 
         os.mkdir(os.path.join(self.test_dir, self.cfg.gen_dir))
         os.mkdir(os.path.join(self.test_dir, self.cfg.mut_dir))
@@ -102,6 +103,7 @@ class testDirIntegrity(unittest.TestCase):
         self.assertEqual(self.cfg.tmp_dir, tmp_abs)
         self.assertEqual(self.cfg.log_dir, log_abs)
         self.assertEqual(self.cfg.incidents_dir, inc_abs)
+        self.assertEqual(self.cfg.samples_dir, sam_abs)
 
     def _change_perms(self, partial):
         '''

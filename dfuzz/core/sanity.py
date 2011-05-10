@@ -12,7 +12,7 @@ def dir_integrity(cfg_obj):
     work_dir = cfg_obj.work_dir
 
     sub_dirs = ['gen_dir', 'mut_dir', 'comb_dir', 
-        'log_dir', 'incidents_dir', 'tmp_dir']
+        'log_dir', 'samples_dir', 'incidents_dir', 'tmp_dir']
 
     if not os.access(work_dir, os.W_OK):
         logging.error('Work dir "%s" must be writable' % work_dir)
@@ -27,7 +27,9 @@ def dir_integrity(cfg_obj):
             abspath = os.path.join(work_dir, path)
             setattr(cfg_obj, d, abspath)
 
-        if d in ['log_dir', 'incidents_dir', 'tmp_dir']:
+        if d in ['log_dir', 'incidents_dir', 'tmp_dir',
+            'samples_dir']:
+
             if not os.path.isdir(abspath):
                 logging.info('Creating dir: %s [%s]' % (d, path))
                 os.mkdir(abspath)

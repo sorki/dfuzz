@@ -9,3 +9,4 @@ class dummyCfg(object):
         self.log_dir = 'log'
         self.incidents_dir = 'fails'
         self.tmp_dir = 'tmp'
+        self.samples_dir = 'samples'
