@@ -21,6 +21,8 @@ def main():
         help='Increase verbosity')
     parser.add_option('-d', '--debug', action='store_true',
         help='Turn on debugging messages')
+    parser.add_option('-o', '--debug_output', action='store_true',
+        help='Print stdout and stderr as debug messages')
     parser.add_option('-c', '--config', metavar='FNAME',
         help='Configuration file name', default='fuzz.conf')
 
@@ -58,6 +60,7 @@ def main():
         sys.exit(1)
 
     cfg = conf.Config(work_dir)
+    cfg.debug_output = opts.debug_output
     logging.debug('Configuration dump: %s', cfg.as_dict())
 
     if not sanity.value_validator(cfg):

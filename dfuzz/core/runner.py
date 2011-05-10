@@ -125,6 +125,11 @@ class ModuleThread(threading.Thread):
                 targ = targ_cls(self.cfg)
                 targ.run(file)
 
+                if self.cfg.debug_output:
+                    logging.debug('stdout: %s' ,targ.stdout)
+                    logging.debug('stderr: %s' ,targ.stderr)
+                    logging.debug('code: %s', targ.code)
+
                 inc_cls = utils.get_class_by_path(self.cfg.incident)
                 if not inc_cls:
                     logging.warning('Incident class "%s" not found,'
