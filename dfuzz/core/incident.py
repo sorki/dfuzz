@@ -16,7 +16,6 @@ class Incident(object):
             6  : 'Process aborted',
             7  : 'Access to undefined portion of memory object',
             8  : 'Floating point exception',
-            9  : 'Kill (timed out)',
             11 : 'Segmentation violation',
         }
 
@@ -79,5 +78,12 @@ class Incident(object):
 class TimeIncident(Incident):
     def __init__(self, *args, **kwargs):
         super(TimeIncident, self).__init__(*args, **kwargs)
+        self.translation[9] = 'Kill (timed out)'
         if self.cfg.timeout_as_incident:
             self.crash_signals.append(signal.SIGKILL)
+
+class TimeValgrindIncident(TimeIncident):
+    def __init__(self, *args, **kwargs):
+        super(TimeIncident, self).__init__(*args, **kwargs)
+        self.translation[101] = 'Valgrind error'
+        self.crash_signals.append(101)
