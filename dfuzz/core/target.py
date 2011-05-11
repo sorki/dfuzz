@@ -46,6 +46,7 @@ class TimedValgrindTarget(TimedTarget):
         nstderr = self.stderr
         ncode = self.code
         ncmd = self.cmd
+        ntarget = self.target
 
         # valgrind run
         self.target = '%s %s' % ('valgrind --error-exitcode=101',
@@ -63,4 +64,5 @@ class TimedValgrindTarget(TimedTarget):
 
         self.stdout = nstdout
         self.stderr = nstderr
+        self.target = ntarget
         self.cmd = ncmd
