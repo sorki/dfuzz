@@ -37,3 +37,24 @@ class TimedTarget(Target):
         super(TimedTarget, self).run(input_file)
 
         timer.cancel()
+
+class TimedValgrindTarget(TimedTarget):
+    def run(self, input_file):
+        # normal run
+        super(TimedValgrindTarget, self).run(input_file)
+        nstdout = self.stdout
+        nstderr = self.stderr
+        ncode = self.code
+
+        # valgrind run
+        self.target = '%s %s' % ('valgrind --error-exitcode=101',
+            self.target)
+
+        super(TimedValgrindTarget, self).run(input_file)
+
+        self.vgrind = self.stderr
+        self.vgrind_code = self.code
+
+        self.stdout = nstdout
+        self.stderr = nstderr
+        self.code = ncode
