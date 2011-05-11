@@ -162,25 +162,30 @@ if __name__ == "__main__":
             frame.info.SetValue(f.read())
 
         with open(os.path.join(path, 'stdout'), 'r') as f:
-            frame.output_text.SetValue(f.read())
+            frame.output_text.SetValue(
+                unicode(f.read(), errors='ignore'))
 
         with open(os.path.join(path, 'stderr'), 'r') as f:
-            frame.err_text.SetValue(f.read())
+            frame.err_text.SetValue(
+                unicode(f.read(), errors='ignore'))
 
         strace = os.path.join(path, 'short_trace')
         if os.path.isfile(strace):
             with open(strace, 'r') as f:
-                frame.strace_text.SetValue(f.read())
+                frame.strace_text.SetValue(
+                    unicode(f.read(), errors='ignore'))
 
         ltrace = os.path.join(path, 'long_trace')
         if os.path.isfile(ltrace):
             with open(ltrace, 'r') as f:
-                frame.ltrace_text.SetValue(f.read())
+                frame.ltrace_text.SetValue(
+                    unicode(f.read(), errors='ignore'))
 
         vgrind = os.path.join(path, 'valgrind')
         if os.path.isfile(vgrind):
             with open(vgrind, 'r') as f:
-                frame.valgrind_text.SetValue(f.read())
+                frame.valgrind_text.SetValue(
+                    unicode(f.read(), errors='ignore'))
 
     frame.Bind(wx.EVT_LIST_ITEM_SELECTED, on_list_click)
     frame.Show()
