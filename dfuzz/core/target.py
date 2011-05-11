@@ -55,6 +55,8 @@ class TimedValgrindTarget(TimedTarget):
         self.vgrind = self.stderr
         if not self.code == 101:
             self.code = ncode
+        else:
+            self.code = -101
 
         self.stdout = nstdout
         self.stderr = nstderr
