@@ -1,0 +1,188 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import os
+import wx
+import sys
+import time
+
+class main_frame(wx.Frame):
+    def __init__(self, *args, **kwds):
+        # begin wxGlade: main_frame.__init__
+        kwds["style"] = wx.DEFAULT_FRAME_STYLE
+        wx.Frame.__init__(self, *args, **kwds)
+        self.main_window = wx.SplitterWindow(self, -1, style=wx.SP_3D|wx.SP_BORDER)
+        self.left_window = wx.Panel(self.main_window, -1)
+        self.filelist = wx.ListCtrl(self.left_window, -1, style=wx.LC_REPORT|wx.SUNKEN_BORDER)
+        self.right_window = wx.Panel(self.main_window, -1)
+        self.label_info = wx.StaticText(self.right_window, -1, "Info:")
+        self.info = wx.TextCtrl(self.right_window, -1, "", style=wx.TE_MULTILINE)
+        self.input = wx.Notebook(self.right_window, -1, style=0)
+        self.input_pane = wx.Panel(self.input, -1)
+        self.input_text = wx.TextCtrl(self.input_pane, -1, "", style=wx.TE_MULTILINE)
+        self.hex_pane = wx.Panel(self.input, -1)
+        self.hex_text = wx.TextCtrl(self.hex_pane, -1, "", style=wx.TE_MULTILINE)
+        self.output_pane = wx.Panel(self.input, -1)
+        self.output_text = wx.TextCtrl(self.output_pane, -1, "", style=wx.TE_MULTILINE)
+        self.err_pane = wx.Panel(self.input, -1)
+        self.err_text = wx.TextCtrl(self.err_pane, -1, "", style=wx.TE_MULTILINE)
+        self.strace_pane = wx.Panel(self.input, -1)
+        self.strace_text = wx.TextCtrl(self.strace_pane, -1, "", style=wx.TE_MULTILINE)
+        self.ltrace_pane = wx.Panel(self.input, -1)
+        self.ltrace_text = wx.TextCtrl(self.ltrace_pane, -1, "", style=wx.TE_MULTILINE)
+        self.valgrind_pane = wx.Panel(self.input, -1)
+        self.valgrind_text = wx.TextCtrl(self.valgrind_pane, -1, "", style=wx.TE_MULTILINE)
+
+        self.__set_properties()
+        self.__do_layout()
+        # end wxGlade
+
+    def __set_properties(self):
+        # begin wxGlade: main_frame.__set_properties
+        self.SetTitle("Incident browser")
+        # end wxGlade
+
+    def __do_layout(self):
+        # begin wxGlade: main_frame.__do_layout
+        main_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        right_sizer = wx.BoxSizer(wx.VERTICAL)
+        valgrind_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        ltrace_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        strace_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        err_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        output_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        hex_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        input_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        left_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        left_sizer.Add(self.filelist, 1, wx.EXPAND, 0)
+        self.left_window.SetSizer(left_sizer)
+        right_sizer.Add(self.label_info, 0, wx.ADJUST_MINSIZE, 0)
+        right_sizer.Add(self.info, 1, wx.EXPAND, 0)
+        input_sizer.Add(self.input_text, 1, wx.EXPAND|wx.ADJUST_MINSIZE, 0)
+        self.input_pane.SetSizer(input_sizer)
+        hex_sizer.Add(self.hex_text, 1, wx.EXPAND|wx.ADJUST_MINSIZE, 0)
+        self.hex_pane.SetSizer(hex_sizer)
+        output_sizer.Add(self.output_text, 1, wx.EXPAND|wx.ADJUST_MINSIZE, 0)
+        self.output_pane.SetSizer(output_sizer)
+        err_sizer.Add(self.err_text, 1, wx.EXPAND|wx.ADJUST_MINSIZE, 0)
+        self.err_pane.SetSizer(err_sizer)
+        strace_sizer.Add(self.strace_text, 1, wx.EXPAND|wx.ADJUST_MINSIZE, 0)
+        self.strace_pane.SetSizer(strace_sizer)
+        ltrace_sizer.Add(self.ltrace_text, 1, wx.EXPAND|wx.ADJUST_MINSIZE, 0)
+        self.ltrace_pane.SetSizer(ltrace_sizer)
+        valgrind_sizer.Add(self.valgrind_text, 1, wx.EXPAND|wx.ADJUST_MINSIZE, 0)
+        self.valgrind_pane.SetSizer(valgrind_sizer)
+        self.input.AddPage(self.input_pane, "Input")
+        self.input.AddPage(self.hex_pane, "Hex input")
+        self.input.AddPage(self.output_pane, "Standard output")
+        self.input.AddPage(self.err_pane, "Standard error")
+        self.input.AddPage(self.strace_pane, "Short trace")
+        self.input.AddPage(self.ltrace_pane, "Long trace")
+        self.input.AddPage(self.valgrind_pane, "Valgrind output")
+        right_sizer.Add(self.input, 1, wx.EXPAND, 0)
+        self.right_window.SetSizer(right_sizer)
+        self.main_window.SplitVertically(self.left_window, self.right_window)
+        main_sizer.Add(self.main_window, 1, wx.EXPAND, 0)
+        self.SetSizer(main_sizer)
+        main_sizer.Fit(self)
+        self.Layout()
+        # end wxGlade
+
+# end of class main_frame
+
+
+if __name__ == "__main__":
+    app = wx.PySimpleApp(0)
+    wx.InitAllImageHandlers()
+    frame = main_frame(None, -1, "")
+    app.SetTopWindow(frame)
+    frame.filelist.InsertColumn(0, 'Incident dir')
+    frame.filelist.InsertColumn(1, 'Date')
+
+    if len(sys.argv) != 2:
+        print >> sys.stderr, 'Usage: incident_viewer incidents_directory'
+        sys.exit(1)
+
+    inc_dict = {}
+    for root, dirs, files in os.walk(sys.argv[1]):
+        for dirname in dirs:
+            t = time.gmtime(os.stat(
+                os.path.join(root, dirname)).st_ctime)
+            frame.filelist.Append([dirname, time.strftime('%Y-%m-%d %H:%M', t)])
+            inc_dict[dirname] = os.path.join(root, dirname)
+
+    frame.filelist.SetColumnWidth(0, -1)
+    frame.filelist.SetColumnWidth(1, -1)
+
+    fo = wx.Font(12, wx.TELETYPE, wx.NORMAL, wx.NORMAL, False)
+    frame.hex_text.SetFont(fo)
+
+    def null_safe_read(fobj):
+        current_string = ""
+        while True:
+            char = fobj.read(1)
+
+            if not char:
+                if current_string:
+                    yield current_string
+                raise StopIteration
+
+            if char and ord(char) != 0:
+                current_string += char
+            elif ord(char) == 0:
+                yield current_string + "(NULL)"
+                current_string = ""
+
+    def on_list_click(event):
+        elem = event.GetItem().GetText().strip()
+        path = inc_dict[elem]
+        with open(os.path.join(path, 'input'), 'r') as f:
+            red = ' '.join(list(null_safe_read(f)))
+            text = unicode(red, errors='ignore')
+            frame.input_text.SetValue(text)
+
+        out = ''
+        wrap = 1
+        red = red.replace('(NULL)', '\0')
+        for char in red:
+            out += hex(ord(char)).split('x')[1].rjust(2, '0') + ' '
+            if wrap % 8 == 0:
+                out += '   '
+            if wrap % 16 == 0:
+                t = unicode(red[wrap-16: wrap].replace('\n',
+                    '\\n').replace('\0', '.'),
+                    errors='ignore')
+                out += t
+                out += '\n'
+            wrap += 1
+
+        frame.hex_text.SetValue(out)
+
+        with open(os.path.join(path, 'info'), 'r') as f:
+            frame.info.SetValue(f.read())
+
+        with open(os.path.join(path, 'stdout'), 'r') as f:
+            frame.output_text.SetValue(f.read())
+
+        with open(os.path.join(path, 'stderr'), 'r') as f:
+            frame.err_text.SetValue(f.read())
+
+        strace = os.path.join(path, 'short_trace')
+        if os.path.isfile(strace):
+            with open(strace, 'r') as f:
+                frame.strace_text.SetValue(f.read())
+
+        ltrace = os.path.join(path, 'long_trace')
+        if os.path.isfile(ltrace):
+            with open(ltrace, 'r') as f:
+                frame.ltrace_text.SetValue(f.read())
+
+        vgrind = os.path.join(path, 'valgrind')
+        if os.path.isfile(vgrind):
+            with open(vgrind, 'r') as f:
+                frame.valgrind_text.SetValue(f.read())
+
+    frame.Bind(wx.EVT_LIST_ITEM_SELECTED, on_list_click)
+    frame.Show()
+    frame.main_window.SetSashPosition(480)
+    app.MainLoop()
