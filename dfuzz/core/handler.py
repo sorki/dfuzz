@@ -79,6 +79,11 @@ class FileIncidentHandler(CoreIncidentHandler):
             self.cfg.incident_reproduce), 'w') as f:
             f.write(self.get_reproduce_string())
 
+        if hasattr(target_obj, 'vgrind'):
+            with open(os.path.join(work_dir,
+                self.cfg.incident_valgrind), 'w') as f:
+                f.write(target_obj.vgrind)
+
         os.chmod(os.path.join(work_dir,
         self.cfg.incident_reproduce), 0755)
 
