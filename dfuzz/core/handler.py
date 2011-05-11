@@ -79,13 +79,13 @@ class FileIncidentHandler(CoreIncidentHandler):
             self.cfg.incident_reproduce), 'w') as f:
             f.write(self.get_reproduce_string())
 
+        os.chmod(os.path.join(work_dir,
+        self.cfg.incident_reproduce), 0755)
+
         if hasattr(target_obj, 'vgrind'):
             with open(os.path.join(work_dir,
                 self.cfg.incident_valgrind), 'w') as f:
                 f.write(target_obj.vgrind)
-
-        os.chmod(os.path.join(work_dir,
-        self.cfg.incident_reproduce), 0755)
 
     def get_info_string(self):
         reason = ''
