@@ -54,11 +54,13 @@ class TimedValgrindTarget(TimedTarget):
         super(TimedValgrindTarget, self).run(input_file)
 
         self.vgrind = self.stderr
+        self.vgrind_cmd = self.cmd
+
         if not self.code == 101:
             self.code = ncode
-            self.cmd = ncmd
         else:
             self.code = -101
 
         self.stdout = nstdout
         self.stderr = nstderr
+        self.cmd = ncmd
