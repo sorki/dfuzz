@@ -3,8 +3,11 @@ Incident handler
 '''
 
 import os
+import shlex
 import shutil
 import logging
+import threading
+import subprocess
 
 from dfuzz.core import utils
 
@@ -48,6 +51,8 @@ class FileIncidentHandler(CoreIncidentHandler):
         out_dir_path = self.cfg.incidents_dir
         inc_dir_name = utils.parse_incident_fmt(self.cfg)
         work_dir = os.path.join(out_dir_path, inc_dir_name)
+        self.work_dir = work_dir
+
 
         if os.path.isdir(work_dir):
             logging.error('Incident "%s" already exists, current'
@@ -105,3 +110,41 @@ class FileIncidentHandler(CoreIncidentHandler):
         if self.to.code == -9: # timeout
             notice = 'echo "NOTICE: Reproducing timeout"\n'
         return '#!/bin/sh\n%s%s\n' % (notice, self.mod_cmd)
+
+class GDBFileIncidentHandler(FileIncidentHandler):
+    def handle_failure(self, target_obj, input_file_path, reason):
+        super(GDBFileIncidentHandler, self).handle_failure(target_obj,
+            input_file_path, reason)
+
+        args = target_obj.cmd.replace(target_obj.target, '').strip()
+        gdb_s = os.path.join(self.work_dir, 'short_trace')
+        gdb_l = os.path.join(self.work_dir, 'long_trace')
+
+        commands = ['run %s' % args,
+            'set environment LIBC_FATAL_STDERR_ 1',
+            'set loggin file %s' % gdb_s,
+            'set logging on', 'bt', 'set logging off',
+            'set loggin file %s' % gdb_l,
+            'set logging on', 'thread apply all bt full',
+            'set logging off', 'quit', 'y']
+        cmdlist_path = os.path.join(self.cfg.tmp_dir, 'gdb_in')
+
+        with open(cmdlist_path, 'w') as f:
+            f.write('\n'.join(commands))
+
+        target = 'gdb -batch -x %s %s' % (cmdlist_path,
+            target_obj.target)
+
+        timer = threading.Timer(int(self.cfg.timeout)*2,
+            self.gdb_alarm_handler)
+        timer.start()
+
+        self.gdb_proc = subprocess.Popen(shlex.split(target),
+            env={'LIBC_FATAL_STDERR_': '1'},
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        self.gdb_proc.communicate()
+        timer.cancel()
+
+    def gdb_alarm_handler(self):
+        self.gdb_proc.kill()
