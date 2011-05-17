@@ -69,6 +69,3 @@ class FuzzWrapper(wrapper.DfuzzWrapper):
                 yield None
 
         return generator
-
-    def tear_down(self):
-        pass

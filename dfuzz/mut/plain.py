@@ -32,6 +32,3 @@ class FuzzWrapper(wrapper.DfuzzWrapper):
                 yield out_path
 
         return generator
-
-    def tear_down(self):
-        pass

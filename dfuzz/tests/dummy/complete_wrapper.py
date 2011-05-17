@@ -5,4 +5,3 @@ class FuzzWrapper(object):
     def method(self): pass
     def set_up(self): pass
     def run(self): pass
-    def tear_down(self): pass

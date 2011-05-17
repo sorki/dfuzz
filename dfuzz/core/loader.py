@@ -26,7 +26,7 @@ class ModuleLoader(object):
         Module string `str_mod` used for logging purposes.
         '''
 
-        required_methods = ['method', 'set_up', 'run', 'tear_down']
+        required_methods = ['method', 'set_up', 'run']
         for method in required_methods:
             if not hasattr(cls, method):
                 logging.warning('"FuzzWrapper" class in module "%s"'

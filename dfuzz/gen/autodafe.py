@@ -46,6 +46,3 @@ class FuzzWrapper(wrapper.DfuzzWrapper):
                     yield os.path.join(root, name)
 
         return generator
-
-    def tear_down(self):
-        pass

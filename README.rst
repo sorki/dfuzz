@@ -69,3 +69,7 @@ Sample fuzz.conf file ::
         [combination]
         modules = dfuzz.comb.simple
         priority = low
+
+In it's simplest form, dfuzz can be used as
+a zzuf wrapper with enhanced detection and reporting
+capabilities.

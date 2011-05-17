@@ -156,7 +156,5 @@ class ModuleThread(threading.Thread):
             logging.warning('No input files for method "%s" found',
                 to_run.method())
 
-        logging.debug('[%s] Tear down phase', to_run)
-        to_run.tear_down()
         logging.debug('[%s] Remove tmp dir', to_run)
         shutil.rmtree(tmp_dir_path)
