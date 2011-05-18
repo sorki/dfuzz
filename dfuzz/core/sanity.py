@@ -118,6 +118,7 @@ def value_validator(cfg_obj):
         'use_no_fuzz' : [False, 'prepend', 'append'],
         'threads'     : int,
         'timeout'     : float,
+        'num_samples' : int,
         'generation'  : int,
         'mutation'    : int,
         'combination' : int,
@@ -137,7 +138,7 @@ def value_validator(cfg_obj):
                 return False
         elif v in [int, float]:
             try:
-                v(val)
+                setattr(cfg_obj, k, v(val))
             except ValueError as e:
                 logging.error('Config parse error. Property "%s"'
                     ' has wrong type. Expected type: "%s"',
