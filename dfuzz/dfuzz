@@ -114,7 +114,7 @@ def main():
 
     if cfg.num_incidents > 0:
         logging.warning('%d incident(s) recorded', cfg.num_incidents)
-        sys.exit(1)
+        sys.exit(2)
 
 if __name__ == "__main__":
     main()
