@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import os
 import sys
+import shutil
 import logging
 import optparse
 import threading
@@ -111,6 +112,8 @@ def main():
         mloader.low_priority)
 
     mrunner.run()
+
+    shutil.rmtree(cfg.tmp_dir)
 
     if cfg.num_incidents > 0:
         logging.warning('%d incident(s) recorded', cfg.num_incidents)
