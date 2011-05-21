@@ -27,8 +27,7 @@ def dir_integrity(cfg_obj):
             abspath = os.path.join(work_dir, path)
             setattr(cfg_obj, d, abspath)
 
-        if d in ['log_dir', 'incidents_dir', 'tmp_dir',
-            'samples_dir']:
+        if d in ['incidents_dir', 'tmp_dir', 'samples_dir']:
 
             if not os.path.isdir(abspath):
                 logging.info('Creating dir: %s [%s]' % (d, path))
