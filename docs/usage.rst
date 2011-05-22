@@ -69,7 +69,7 @@ how to enable or disable one of the fuzzing methods::
         combination = 0
 
 By default, combination will combine Autodafe and Zzuf modules provided
-that there is `comb` subdirectory presnet in your work dir and there
+that there is `comb` subdirectory present in your work dir and there
 is an Autodafe template to work with.
 
 
@@ -120,5 +120,113 @@ is illustrated by following example::
 So by default class combines generation of files by Autodafe with their
 mutation by Zzuf. To save time, only 10 mutation of each file are done.
 
+
+Priorities & threading
+^^^^^^^^^^^^^^^^^^^^^^
+
 Priority of each method can be set to `low` or `high`. High priority methods
 will precede low priority ones.
+
+It's also possible to run multiple fuzzers simultaneously in threads.
+Number of threads is specified by `threads = X` option. Default
+setting is `threads = 1` as most of the Linux daemons require
+open ports or exclusive access to files.
+
+
+Supplying plain files
+^^^^^^^^^^^^^^^^^^^^^^^
+
+If you posses test files which are/were problematic
+you can supply them during the testing directly without
+prior fuzzing. Class for the job is `dfuzz.mut.plain`
+which only copies its input to the output directory.
+
+
+Creating new wrapper/fuzzer class
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Modularity and dynamic module loading allows
+simple creation of fuzzers or wrappers for
+existing fuzzers.
+
+This is done by subclassing `dfuzz.core.wrapper.DfuzzWrapper`.
+New class has to implement following methods:
+
+ - `__str__` - which should return short name of the class
+ - `method` - which returns one of `mut/gen/comb` method identifiers
+ - `set_up` - accepts input file path and parameters supplied via config
+ - `run` - returns generator which yields full paths to output file
+
+When creating new fuzzer or wrapper it's best to look at one
+of the existing classes.
+
+
+Using external tools
+---------------------
+
+`Dfuzz` can take an advantage of two external tools:
+
+ - GDB - GNU Debugger
+ - Valgrind - runtime memory analyzer
+
+To enable these tools put following snippet into your `fuzz.conf` file::
+
+        [core]
+        target=dfuzz.core.target.TimedValgrindTarget
+        incident=dfuzz.core.incident.TimeValgrindIncident
+        incident_handler=dfuzz.core.handler.GDBFileIncidentHandler
+
+Again, modularity allows you to use your own classes.
+Implementation of target runners or handlers is not covered in this guide.
+
+
+Handling timeouts
+^^^^^^^^^^^^^^^^^^
+
+Default timeout for single test is set to 3 seconds. If it is exceeded
+tested application is killed.
+
+It is possible to record timeouts as incident with `timeout_as_incident = 1` option.
+
+
+Other configuration options
+----------------------------
+
+Documented with comments next to their default value::
+
+
+        [global]
+        num_samples = 2 ; number of output samples to store
+
+        [file]
+        use_no_fuzz = 0 ; append/prepend/0 ; turns on the inclusion of no_fuzz_file
+        ; specified in input section. Values are self explanatory.
+        ; This file is inserted to the output _after_ fuzzing process.
+
+        [input]
+        no_fuzz_file = no_fuzz ; name of no_fuzz file
+
+        gen_dir  = gen ; generation templates directory
+        mut_dir  = mut ; mutation inputs directory
+        comb_dir = comb ; combination inputs directory
+
+        gen_dir_mask  = * ; masks for respective directory, used to filter files
+        mut_dir_mask  = * ; same way the shell works
+        comb_dir_mask = *
+
+        [output]
+        tmp_dir = tmp ; temporary directory, used to store outputs
+        samples_dir = samples ; samples directory
+
+        incidents_dir    = incidents ; directory where the incidents are stored
+        incident_format  = U ; `U` - uuid `I` - #nth incident
+
+        ; filenames of the files which are generated
+        ; by default incident handler
+        incident_info    = info
+        incident_input   = input
+        incident_stdout  = stdout
+        incident_stderr  = stderr
+        incident_minimal = input_minimal
+        incident_valgrind = valgrind
+        incident_reproduce  = reproduce.sh
