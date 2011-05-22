@@ -211,7 +211,7 @@ Documented with comments next to their default value::
         comb_dir = comb ; combination inputs directory
 
         gen_dir_mask  = * ; masks for respective directory, used to filter files
-        mut_dir_mask  = * ; same way the shell works
+        mut_dir_mask  = * ; same way the shell does
         comb_dir_mask = *
 
         [output]
