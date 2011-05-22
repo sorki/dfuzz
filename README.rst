@@ -45,6 +45,9 @@ Usage
  - observe output
  - if everything is fine remove the -d and -o options and run the command again
  - check the samples directory created in your working directory
+ - use included incident_viewer to browser incidents if there are any
+
+Complete documentation in docs directory.
 
 Sample fuzz.conf file ::
 
