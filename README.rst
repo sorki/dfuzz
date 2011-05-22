@@ -18,7 +18,7 @@ The main problems dfuzz solves are:
 Requirements
 -------------
  - python >= 2.6
- - fuzzer (zzuf, autodafé, ...)
+ - fuzzer (zzuf, autodafe, ...)
  - gdb, valgrind (both are optional)
 
 Features
@@ -31,7 +31,7 @@ Features
 Supported fuzzers
 ------------------
  - zzuf (mutation)
- - autodafé (generation)
+ - autodafe (generation)
  - plain (debugging purposes)
 
 Usage
