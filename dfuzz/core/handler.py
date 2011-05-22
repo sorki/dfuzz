@@ -149,4 +149,3 @@ class GDBFileIncidentHandler(FileIncidentHandler):
 
     def gdb_alarm_handler(self):
         self.gdb_proc.terminate()
-        self.gdb_proc.wait()
