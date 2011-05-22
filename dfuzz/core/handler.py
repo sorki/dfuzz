@@ -144,7 +144,9 @@ class GDBFileIncidentHandler(FileIncidentHandler):
             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         self.gdb_proc.communicate()
+
         timer.cancel()
 
     def gdb_alarm_handler(self):
-        self.gdb_proc.kill()
+        self.gdb_proc.terminate()
+        self.gdb_proc.wait()
