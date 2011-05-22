@@ -1,0 +1,15 @@
+Timeout sample
+---------------
+
+Timeout handling sample. Timeout is reported as incident
+due to `timeout_as_incident = 1` option.
+
+
+Compile with:
+  gcc -o sample timeout_sample.c
+
+Test with:
+  dfuzz --verbose .
+
+Observe output and check incidents with:
+  incident_viewer incidents

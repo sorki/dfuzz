@@ -1,0 +1,21 @@
+Valgrind detection sample
+--------------------------
+
+Used code sample: small buffer size sample (bo_sample.c)
+
+The sample will crash on first input file (mut/segf) multiple times.
+On second input file (mut/valg), it won't crash but memory problems
+are detected by valgrind.
+
+There is no fuzzing incorporated in this sample as it's
+using dfuzz.mut.plain pseudofuzzer which only copies its input
+to output directory.
+
+Compile with:
+  gcc -o -ggdb3 sample bo_sample.c
+
+Test with:
+  dfuzz --debug --debug_output .
+
+Observe output and check incidents with:
+  incident_viewer incidents

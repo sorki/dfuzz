@@ -1,0 +1,9 @@
+Minimal sample using `cat` utility
+----------------------------------
+
+Sample generation increased with `num_samples` command.
+
+Test with:
+  dfuzz --debug --debug_output .
+
+Check generated samples in samples subdirectory.
