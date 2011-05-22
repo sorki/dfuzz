@@ -60,8 +60,9 @@ setup(name=NAME,
 
     zip_safe=False,
 
-    # TODO (minor): add classifiers
     classifiers=['Development Status :: 4 - Beta',
                'Operating System :: OS Independent',
+               'Intended Audience :: Developers',
+               'Topic :: Software Development :: Testing',
                'Programming Language :: Python',]
     )
